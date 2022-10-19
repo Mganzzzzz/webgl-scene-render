@@ -8,7 +8,7 @@ let program
 let vbo
 var numFs = 5;
 var radius = 200;
-var fPosition = [radius, 0, 0];
+var fPosition = [0, 0, -50];
 var cameraAngleRadians = degToRad(0);
 var up = [0, 1, 0];
 var fieldOfViewRadians = degToRad(60);
@@ -19,17 +19,17 @@ cameraMatrix = m4.translate(cameraMatrix, 0, 0, radius * 1.5);
 
 // Get the camera's postion from the matrix we computed
 var cameraPosition = [
-    cameraMatrix[12],
-    cameraMatrix[13],
-    cameraMatrix[14],
+    cameraMatrix[0],
+    cameraMatrix[0],
+    cameraMatrix[0],
 ];
 
 
 export function init() {
-    webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+    // webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    projection_matrix = m4.perspective(45.0, width / height, 0.1, 2000.0);
+    // gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    projection_matrix = m4.perspective(45.0, width / height, 0.1, 1000.0);
     var cameraMatrix = m4.lookAt(cameraPosition, fPosition, up);
     // Make a view matrix from the camera matrix
     view_matrix = m4.inverse(cameraMatrix);
@@ -37,9 +37,9 @@ export function init() {
     vbo = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     var positions = [
-        -0.5, -0.5, -1.0,
-        0.5, -0.5, -1.0,
-        0.0, 0.5, -1.0,
+        -50, -50, -100,
+        50, -50, -100,
+        0, 50, -100,
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     program = webglUtils.createProgramFromScripts(gl, ["vertex-shader-2d", "fragment-shader-2d"]);
