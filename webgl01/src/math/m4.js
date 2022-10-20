@@ -134,8 +134,7 @@ export const m4 = {
             subtractVectors(cameraPosition, target));
         var xAxis = cross(up, zAxis);
         var yAxis = cross(zAxis, xAxis);
-
-        return [
+        return m4.inverse([
             xAxis[0], xAxis[1], xAxis[2], 0,
             yAxis[0], yAxis[1], yAxis[2], 0,
             zAxis[0], zAxis[1], zAxis[2], 0,
@@ -143,7 +142,7 @@ export const m4 = {
             cameraPosition[1],
             cameraPosition[2],
             1,
-        ];
+        ]);
     },
     scaling: function (sx, sy, sz) {
         return [
