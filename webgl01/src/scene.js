@@ -1,4 +1,4 @@
-import {degToRad} from "./math/utils";
+import {degToRad} from "./math/math_utils";
 
 const canvas = document.querySelector("#c");
 const gl = canvas.getContext("webgl");
