@@ -27,9 +27,9 @@ export function init() {
     vbo = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     var positions = [
-        -0.5, -0.5, -2.0,
-        0.5, -0.5, -2.0,
-        0.0, 0.5, -2.0,
+        -0.5, -0.5, -2.0, 1.0,
+        0.5, -0.5, -2.0, 1.0,
+        0.0, 0.5, -2.0, 1.0,
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     program = webglUtils.createProgramFromScripts(gl, ["vertex-shader-2d", "fragment-shader-2d"]);
@@ -53,7 +53,7 @@ export function render() {
 
     const p = gl.getAttribLocation(program, 'position')
     gl.enableVertexAttribArray(p)
-    gl.vertexAttribPointer(p, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(p, 4, gl.FLOAT, false, 0, 0);
 
     const color_pos = gl.getAttribLocation(program, 'color')
     // gl.enableVertexAttribArray(color_pos)
