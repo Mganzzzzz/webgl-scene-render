@@ -6,11 +6,10 @@ const width = canvas.clientWidth
 const height = canvas.clientHeight
 let program
 let vbo
-let color_vbo
 var radius = 200;
 var cameraAngleRadians = degToRad(0);
 var fieldOfViewRadians = degToRad(45);
-
+let FSIZE
 var projection_matrix = m4.identity()
 var view_matrix = m4.identity()
 var model_matrix = m4.identity()
@@ -27,22 +26,15 @@ export function init() {
 
     vbo = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    var positions = [
-        -0.5, -0.5, -2.0,
-        0.5, -0.5, -2.0,
-        0.0, 0.5, -2.0,
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    var verties = new Float32Array([
+        -0.5, -0.5, -2.0, 0.6, 0, 0,
+        0.5, -0.5, -2.0, 0, 0.7, 0,
+        0.0, 0.5, -2.0, 0, 0, 0.5,
+    ]);
+    FSIZE = verties.BYTES_PER_ELEMENT
+    gl.bufferData(gl.ARRAY_BUFFER, verties, gl.STATIC_DRAW);
 
 
-    color_vbo = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, color_vbo);
-    var colors = [
-        0.6, 0, 0,
-        0, 0.7, 0,
-        0, 0, 0.5,
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     program = webglUtils.createProgramFromScripts(gl, ["vertex-shader-2d", "fragment-shader-2d"]);
 }
 
@@ -63,13 +55,13 @@ export function render() {
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
     const a_position = gl.getAttribLocation(program, 'position')
     gl.enableVertexAttribArray(a_position)
-    gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, FSIZE * 6, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, color_vbo)
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
     const a_color = gl.getAttribLocation(program, 'color')
     gl.enableVertexAttribArray(a_color)
-    gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
     gl.drawArrays(gl.TRIANGLES, 0, 3); /// 画三角形，从第几个点开始 绘制几个点
