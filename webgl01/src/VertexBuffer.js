@@ -4,7 +4,7 @@ export class VertexData {
     constructor() {
         this.mPosition = [0, 0, 0, 1]
         this.mColor = [1, 1, 1, 1]
-        this.mTexcoord = [0, 0]
+        this.mTexcoord = [0, 0, 0, 0]
         this.mNormal = [0, 0, 0, 0]
     }
 
@@ -22,14 +22,16 @@ export class VertexData {
         this.mColor[3] = a
     }
 
-    setTexcoord(u, v) {
-        this.mTexcoord[0] = u
-        this.mTexcoord[1] = v
+    setTexcoord(u, v, x, y) {
+        this.mTexcoord[0] = u || 0.0
+        this.mTexcoord[1] = v || 0.0
+        this.mTexcoord[2] = x || 0.0
+        this.mTexcoord[3] = y || 0.0
     }
 
     setNormal(r, g, b, a = 1.0) {
         this.mNormal[0] = r || 0.0
-        this.mNormal[1] = g || 0.0
+        this.mNormal[1] = g || 1.0
         this.mNormal[2] = b || 0.0
         this.mNormal[3] = a || 1.0
     }

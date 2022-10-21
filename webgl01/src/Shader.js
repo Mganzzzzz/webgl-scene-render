@@ -61,7 +61,7 @@ export class Shader {
         gl.vertexAttribPointer(this.mColorLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 4);
 
         gl.enableVertexAttribArray(this.mTexcoordLocation);
-        gl.vertexAttribPointer(this.mTexcoordLocation, 2, gl.FLOAT, false, VertexData.SIZE, FSIZE * 8);
+        gl.vertexAttribPointer(this.mTexcoordLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 8);
     }
 
     unActive() {

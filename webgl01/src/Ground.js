@@ -1,6 +1,5 @@
 import {VertexBuffer} from "./VertexBuffer";
 import {createBufferObject} from "./utils";
-import {Shader} from "./Shader";
 
 export class Ground {
     constructor(shader) {
@@ -41,16 +40,15 @@ export class Ground {
                 }
             }
         }
-        this.vbo = createBufferObject(gl.ARRAY_BUFFER, this.mVertexBuffer.getData(), gl.STATIC_DRAW)
+        const bufferData = this.mVertexBuffer.getData()
+        this.vbo = createBufferObject(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW)
     }
 
     render(m, v, p) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
         this.mShader.active()
         this.mShader.setMVP(m, v, p)
-
         for (let i = 0; i < 400; ++i) {
-            // glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
             gl.drawArrays(gl.TRIANGLE_STRIP, i * 4, 4)
         }
 
