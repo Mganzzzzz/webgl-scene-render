@@ -27,9 +27,9 @@ export function init() {
     vbo = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     var verties = new Float32Array([
-        -0.5, -0.5, -2.0, 0.6, 0, 0,
-        0.5, -0.5, -2.0, 0, 0.7, 0,
-        0.0, 0.5, -2.0, 0, 0, 0.5,
+        -0.5, -0.5, -2.0, 1.0, 0.6, 0, 0, 1.0,
+        0.5, -0.5, -2.0, 1.0, 0, 0.7, 0, 1.0,
+        0.0, 0.5, -2.0, 1.0, 0, 0, 0.5, 1.0,
     ]);
     FSIZE = verties.BYTES_PER_ELEMENT
     gl.bufferData(gl.ARRAY_BUFFER, verties, gl.STATIC_DRAW);
@@ -55,13 +55,13 @@ export function render() {
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
     const a_position = gl.getAttribLocation(program, 'position')
     gl.enableVertexAttribArray(a_position)
-    gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, FSIZE * 6, 0);
+    gl.vertexAttribPointer(a_position, 4, gl.FLOAT, false, FSIZE * 8, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
     const a_color = gl.getAttribLocation(program, 'color')
     gl.enableVertexAttribArray(a_color)
-    gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
+    gl.vertexAttribPointer(a_color, 4, gl.FLOAT, false, FSIZE * 8, FSIZE * 4);
     gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
     gl.drawArrays(gl.TRIANGLES, 0, 3); /// 画三角形，从第几个点开始 绘制几个点
