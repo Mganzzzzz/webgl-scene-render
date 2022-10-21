@@ -1,8 +1,8 @@
 import {init, render} from "./scene";
 
-function main() {
-    init()
-    render()
+async function main() {
+    await init()
+    await render()
 }
 
 main()

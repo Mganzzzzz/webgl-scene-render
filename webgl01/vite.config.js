@@ -2,6 +2,6 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
    define: {
-    gl: window.gl
+    gl: 'window.gl'
   },
 })
