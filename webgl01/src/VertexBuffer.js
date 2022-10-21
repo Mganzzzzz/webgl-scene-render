@@ -2,10 +2,10 @@ export class VertexData {
     static  SIZE = 0
 
     constructor() {
-        this.mPosition = []
-        this.mColor = []
-        this.mTexcoord = []
-        this.mNormal = []
+        this.mPosition = [0, 0, 0, 1]
+        this.mColor = [1, 1, 1, 1]
+        this.mTexcoord = [0, 0]
+        this.mNormal = [0, 0, 0, 0]
     }
 
     setPosition(x, y, z, w = 1.0) {
@@ -16,9 +16,9 @@ export class VertexData {
     }
 
     setColor(r, g, b, a = 1.0) {
-        this.mColor[0] = r
-        this.mColor[1] = g
-        this.mColor[2] = b
+        this.mColor[0] = r || 1.0
+        this.mColor[1] = g || 1.0
+        this.mColor[2] = b || 1.0
         this.mColor[3] = a
     }
 
@@ -28,10 +28,10 @@ export class VertexData {
     }
 
     setNormal(r, g, b, a = 1.0) {
-        this.mNormal[0] = r
-        this.mNormal[1] = g
-        this.mNormal[2] = b
-        this.mNormal[3] = a
+        this.mNormal[0] = r || 0.0
+        this.mNormal[1] = g || 0.0
+        this.mNormal[2] = b || 0.0
+        this.mNormal[3] = a || 1.0
     }
 
 
@@ -40,7 +40,7 @@ export class VertexData {
             this.mPosition,
             this.mColor,
             this.mTexcoord,
-            // this.mNormal,
+            this.mNormal,
         ]
         const ret = arr.flat()
         VertexData.SIZE = Float32Array.BYTES_PER_ELEMENT * ret.length
