@@ -1,3 +1,5 @@
+import {VertexData} from "./VertexBuffer";
+
 const FSIZE = Float32Array.BYTES_PER_ELEMENT
 
 export class Shader {
@@ -53,13 +55,13 @@ export class Shader {
         gl.useProgram(this.mProgram);
         gl.enableVertexAttribArray(this.mPositionLocation);/// 启用shader 里面的 顶点数组 名字是position
         /// 配置顶点数据 参数分别是 shader插槽位置，4个浮点数，是否归一化， 每个顶点之间的间隔(或者每个顶点的大小)， 起始位置偏移
-        gl.vertexAttribPointer(this.mPositionLocation, 4, gl.FLOAT, false, FSIZE * 10, 0);
+        gl.vertexAttribPointer(this.mPositionLocation, 4, gl.FLOAT, false, VertexData.SIZE, 0);
         gl.enableVertexAttribArray(this.mColorLocation);
 
-        gl.vertexAttribPointer(this.mColorLocation, 4, gl.FLOAT, false, FSIZE * 10, FSIZE * 4);
+        gl.vertexAttribPointer(this.mColorLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 4);
 
         gl.enableVertexAttribArray(this.mTexcoordLocation);
-        gl.vertexAttribPointer(this.mTexcoordLocation, 2, gl.FLOAT, false, FSIZE * 10, FSIZE * 8);
+        gl.vertexAttribPointer(this.mTexcoordLocation, 2, gl.FLOAT, false, VertexData.SIZE, FSIZE * 8);
     }
 
     unActive() {

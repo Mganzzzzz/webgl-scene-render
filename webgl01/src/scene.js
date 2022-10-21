@@ -2,6 +2,7 @@ import {degToRad} from "./math/math_utils";
 import {createBufferObject, createTextureFromUrl} from "./utils";
 import testImg from './static/test.png'
 import {Shader} from "./shader";
+import {VertexBuffer} from "./VertexBuffer";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
@@ -27,12 +28,20 @@ export async function init() {
     view_matrix = m4.lookAt([0, 0, 0], [0, 0, -1], [0, 1, 0]);
 
     texture = await createTextureFromUrl(testImg)
-    var verties = [
-        -0.5, -0.5, -2.0, 1.0, 0.6, 0, 0, 1.0, 0.0, 0.0,
-        0.5, -0.5, -2.0, 1.0, 0, 0.7, 0, 1.0, 1.0, 0.0,
-        0.0, 0.5, -2.0, 1.0, 0, 0, 0.5, 1.0, 0.5, 1.0,
-    ];
-    vbo = createBufferObject(gl.ARRAY_BUFFER, verties, gl.STATIC_DRAW)
+    const vertexBuffer = new VertexBuffer()
+    vertexBuffer.setSize(3)
+    vertexBuffer.setPosition(0, -0.5, -0.5, -2.0, 1.0)
+    vertexBuffer.setPosition(1, 0.5, -0.5, -2.0, 1.0)
+    vertexBuffer.setPosition(2, 0.0, 0.5, -2.0, 1.0)
+
+    vertexBuffer.setColor(0, 0.6, 0, 0, 1.0,)
+    vertexBuffer.setColor(1, 0, 0.7, 0, 1.0,)
+    vertexBuffer.setColor(2, 0, 0, 0.5, 1.0,)
+
+    vertexBuffer.setTexcoord(0, 0.0, 0.0,)
+    vertexBuffer.setTexcoord(1, 1.0, 0.0,)
+    vertexBuffer.setTexcoord(2, 0.5, 1.0,)
+    vbo = createBufferObject(gl.ARRAY_BUFFER, vertexBuffer.getData(), gl.STATIC_DRAW)
     shader = new Shader()
     shader.initStandardShader("vertex-shader-2d", "fragment-shader-2d")
 }
