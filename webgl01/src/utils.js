@@ -3,6 +3,7 @@ export function createBufferObject(glEnum = gl.ARRAY_BUFFER, bufferData, usage =
     gl.bindBuffer(glEnum, vbo);
     var verties = new Float32Array(bufferData);
     gl.bufferData(glEnum, verties, usage);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null)
     return vbo
 }
 
