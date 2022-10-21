@@ -48,6 +48,39 @@
         gl_FragColor = V_Color * texture2D(U_texture, V_texcord);;// return redish-purple
     }
 </script>
+<script type="x-shader/x-vertex" id="ground.vs">
+    // an attribute will receive data from a buffer
+    precision mediump float;
+
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec2 texcoord;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+
+    void main() {
+        V_Color=color;
+        V_texcord = texcoord;
+        gl_Position=P*V*M*position;
+    }
+
+</script>
+<script type="x-shader/x-fragment" id="ground.fs">
+    // fragment shaders don't have a default precision so we need
+    // to pick one. mediump is a good default
+    precision mediump float;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+    uniform sampler2D U_texture;
+    void main() {
+        // gl_FragColor is a special variable a fragment shader
+        // is responsible for setting
+        gl_FragColor = V_Color * texture2D(U_texture, V_texcord);;// return redish-purple
+    }
+</script>
 
 
 <body>

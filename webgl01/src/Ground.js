@@ -1,14 +1,16 @@
 import {VertexBuffer} from "./VertexBuffer";
-import {createBufferObject} from "./utils";
-
+import {createBufferObject, createTextureFromUrl} from "./utils";
+import testImg from './static/test.png'
 export class Ground {
     constructor(shader) {
         this.vbo = null
         this.mShader = shader
+        this.mTexture = null
         this.mVertexBuffer = new VertexBuffer
     }
 
-    init() {
+    async init() {
+        this.mTexture = await createTextureFromUrl(testImg)
         this.mVertexBuffer.setSize(1600);
         for (let z = 0; z < 20; ++z) {
             let zStart = 100.0 - z * 10.0
@@ -25,6 +27,11 @@ export class Ground {
                 this.mVertexBuffer.setNormal(offset_quad_index + 1, 0.0, 1.0, 0.0);
                 this.mVertexBuffer.setNormal(offset_quad_index + 2, 0.0, 1.0, 0.0);
                 this.mVertexBuffer.setNormal(offset_quad_index + 3, 0.0, 1.0, 0.0);
+
+                this.mVertexBuffer.setTexcoord(offset_quad_index, 0.0, 0.0);
+                this.mVertexBuffer.setTexcoord(offset_quad_index + 1, 0.0, 1.0);
+                this.mVertexBuffer.setTexcoord(offset_quad_index + 2, 1.0, 0.0);
+                this.mVertexBuffer.setTexcoord(offset_quad_index + 3, 1.0, 1.0);
 
                 if ((z % 2) ^ (x % 2)) {
                     this.mVertexBuffer.setColor(offset_quad_index, 0.9, 0.9, 0.9);
@@ -47,6 +54,8 @@ export class Ground {
     render(m, v, p) {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
         this.mShader.active()
+        this.mShader.setTexture("U_texture", this.mTexture);
+
         this.mShader.setMVP(m, v, p)
         for (let i = 0; i < 400; ++i) {
             gl.drawArrays(gl.TRIANGLE_STRIP, i * 4, 4)
