@@ -29,11 +29,11 @@ export class VertexData {
         this.mTexcoord[3] = y || 0.0
     }
 
-    setNormal(r, g, b, a = 1.0) {
+    setNormal(r, g, b, a) {
         this.mNormal[0] = r || 0.0
-        this.mNormal[1] = g || 1.0
+        this.mNormal[1] = g || 0.0
         this.mNormal[2] = b || 0.0
-        this.mNormal[3] = a || 1.0
+        this.mNormal[3] = a || 0.0
     }
 
 
@@ -72,7 +72,7 @@ export class VertexBuffer {
         this.vertexData[index].setTexcoord(u, v)
     }
 
-    setNormal(index, r, g, b, a = 1.0) {
+    setNormal(index, r, g, b, a ) {
         this.vertexData[index].setNormal(r, g, b, a)
     }
 

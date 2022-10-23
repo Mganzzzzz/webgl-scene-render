@@ -60,20 +60,25 @@ export class Model {
             this.mVertexBuffer.setNormal(i, ...n.normal);
             this.mVertexBuffer.setTexcoord(i, ...n.texcoord);
         })
+        // console.log('debug this.mVertexBuffer', this.mVertexBuffer)
         const bufferData = this.mVertexBuffer.getData()
         this.vbo = createBufferObject(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW)
     }
 
     active() {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+
     }
 
     render(m, v, p) {
-        this.active()
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
         this.shader.active()
         this.shader.setMVP(m, v, p)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientMaterial'), 0.4, 0.4, 0.4, 0.1)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientLight'), 0.4, 0.4, 0.4, 1.0)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientLight'), 0.1, 0.1, 0.1, 1.0)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientMaterial'), 0.1, 0.1, 0.1, 1.0)
+
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_DiffuseLight'), 0.8, 0.8, 0.8, 1.0)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_DiffuseMaterial'), 0.4, 0.4, 0.4, 1.0)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_LightPos'), 0.0, 1.0, 0.0, 0.0)
         gl.drawArrays(gl.TRIANGLES, 0, this.mVertexBuffer.vertexData.length)
     }
 

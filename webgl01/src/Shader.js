@@ -8,6 +8,7 @@ export class Shader {
         this.mPositionLocation = -1
         this.mColorLocation = -1
         this.mTexcoordLocation = -1
+        this.mNormalLocation = -1
         this.mMLocation = -1
         this.mPLocation = -1
         this.mVLocation = -1
@@ -24,6 +25,7 @@ export class Shader {
         this.mPositionLocation = gl.getAttribLocation(mProgram, "position");
         this.mColorLocation = gl.getAttribLocation(mProgram, "color");
         this.mTexcoordLocation = gl.getAttribLocation(mProgram, "texcoord");
+        this.mNormalLocation = gl.getAttribLocation(mProgram, "normal");
         this.mMLocation = gl.getUniformLocation(mProgram, "M");
         this.mPLocation = gl.getUniformLocation(mProgram, "P");
         this.mVLocation = gl.getUniformLocation(mProgram, "V");
@@ -56,12 +58,21 @@ export class Shader {
         gl.enableVertexAttribArray(this.mPositionLocation);/// 启用shader 里面的 顶点数组 名字是position
         /// 配置顶点数据 参数分别是 shader插槽位置，4个浮点数，是否归一化， 每个顶点之间的间隔(或者每个顶点的大小)， 起始位置偏移
         gl.vertexAttribPointer(this.mPositionLocation, 4, gl.FLOAT, false, VertexData.SIZE, 0);
-        gl.enableVertexAttribArray(this.mColorLocation);
 
-        gl.vertexAttribPointer(this.mColorLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 4);
+        if(this.mColorLocation > 0) {
+            gl.enableVertexAttribArray(this.mColorLocation);
+            gl.vertexAttribPointer(this.mColorLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 4);
+        }
 
-        gl.enableVertexAttribArray(this.mTexcoordLocation);
-        gl.vertexAttribPointer(this.mTexcoordLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 8);
+        if(this.mTexcoordLocation > 0) {
+            gl.enableVertexAttribArray(this.mTexcoordLocation);
+            gl.vertexAttribPointer(this.mTexcoordLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 8);
+        }
+
+        if(this.mNormalLocation > 0) {
+            gl.enableVertexAttribArray(this.mNormalLocation);
+            gl.vertexAttribPointer(this.mNormalLocation, 4, gl.FLOAT, false, VertexData.SIZE, FSIZE * 12);
+        }
     }
 
     unActive() {
