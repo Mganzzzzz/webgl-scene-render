@@ -82,6 +82,44 @@
     }
 </script>
 
+<script type="x-shader/x-vertex" id="light.vs">
+    // an attribute will receive data from a buffer
+    precision mediump float;
+
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec2 texcoord;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+
+    void main() {
+        V_Color=color;
+        V_texcord = texcoord;
+        gl_Position=P*V*M*position;
+    }
+
+</script>
+<script type="x-shader/x-fragment" id="light.fs">
+    // fragment shaders don't have a default precision so we need
+    // to pick one. mediump is a good default
+    precision mediump float;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+    uniform sampler2D U_texture;
+    uniform vec4 U_AmbientMaterial;
+    uniform vec4 U_AmbientLight;
+    void main() {
+        vec3 color = vec3(0.0, 0.0, 0.0);
+        vec3 ambient_color = U_AmbientLight.rgb * U_AmbientMaterial.rgb;
+        vec3 diffse_color = vec3(0.0, 0.0, 0.0);
+        vec3 specular_color =vec3(0.0, 0.0, 0.0);
+        gl_FragColor =vec4(ambient_color+diffse_color+specular_color, 1.0);
+    }
+</script>
+
 
 <body>
 <!--<div id="app"></div>-->

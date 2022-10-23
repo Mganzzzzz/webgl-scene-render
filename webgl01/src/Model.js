@@ -72,6 +72,8 @@ export class Model {
         this.active()
         this.shader.active()
         this.shader.setMVP(m, v, p)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientMaterial'), 0.4, 0.4, 0.4, 0.1)
+        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientLight'), 0.4, 0.4, 0.4, 1.0)
         gl.drawArrays(gl.TRIANGLES, 0, this.mVertexBuffer.vertexData.length)
     }
 

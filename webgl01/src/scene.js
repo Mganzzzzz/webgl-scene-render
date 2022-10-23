@@ -29,21 +29,21 @@ export async function init() {
 
     // texture = await createTextureFromUrl(testImg)
     shader = new Shader()
-    shader.initStandardShader("ground.vs", "ground.fs")
-    ground = new Ground(shader)
+    shader.initStandardShader("light.vs", "light.fs")
+    // ground = new Ground(shader)
     model = new Model(shader)
     await model.init()
-    await ground.init()
+    // await ground.init()
 }
 
 export async function render() {
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
-    gl.clearColor(0.1, 0.4, 0.7, 1.0)
+    gl.clearColor(0.0, 0.0, 0.0, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     model_matrix = m4.translation(0, -1.5, -10, model_matrix)
     model.render(model_matrix, view_matrix, projection_matrix)
-    ground.render(model_matrix, view_matrix, projection_matrix)
+    // ground.render(model_matrix, view_matrix, projection_matrix)
     // gl.drawArrays(gl.TRIANGLES, 0, 3); /// 画三角形，从第几个点开始 绘制几个点
     shader.unActive()
 }
