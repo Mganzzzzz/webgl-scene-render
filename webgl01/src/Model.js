@@ -12,9 +12,11 @@ export class Model extends Geometry {
         this.mAmbientMaterial = [0, 0, 0, 0]
         this.mDiffuseMaterial = [0, 0, 0, 0]
         this.mSpecularMaterial = [0, 0, 0, 0]
+        this.sceneNode = null
     }
 
-    async init() {
+    async init(sceneNode) {
+        this.sceneNode = sceneNode
         const positions = []
         const texcoords = []
         const normals = []
@@ -64,6 +66,11 @@ export class Model extends Geometry {
         // console.log('debug this.mVertexBuffer', this.mVertexBuffer)
         const bufferData = this.mVertexBuffer.getData()
         this.vbo = createBufferObject(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW)
+    }
+
+    update(v, p) {
+        if (this.sceneNode.mModelMatrix) {
+        }
     }
 
     active() {

@@ -14,6 +14,10 @@ export class SceneNode extends LinkedList {
     }
 
 
+    update(v, p) {
+        this.mGeometry.update(v, p)
+    }
+
     render(v, p) {
         this.mGeometry.active()
         this.mMaterial.setMat4('M', this.mModelMatrix)

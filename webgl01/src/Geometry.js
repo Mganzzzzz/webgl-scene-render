@@ -3,6 +3,10 @@ export class Geometry {
 
     }
 
+    update() {
+
+    }
+
     render() {
 
     }
