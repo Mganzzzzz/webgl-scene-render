@@ -87,7 +87,7 @@ export class Material {
         }
 
         if (prop) {
-            prop.texutre = texture
+            prop.texture = texture
         }
     }
 

@@ -1,8 +1,10 @@
 import {VertexBuffer} from "./VertexBuffer";
 import {createBufferObject, createTextureFromUrl} from "./utils";
 import testImg from './static/test.png'
-export class Ground {
+import {Geometry} from "./Geometry";
+export class Ground extends Geometry{
     constructor(shader) {
+        super()
         this.vbo = null
         this.mShader = shader
         this.mTexture = null
@@ -51,15 +53,20 @@ export class Ground {
         this.vbo = createBufferObject(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW)
     }
 
-    render(m, v, p) {
+    active() {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
-        this.mShader.active()
-        this.mShader.setTexture("U_texture", this.mTexture);
+    }
 
-        this.mShader.setMVP(m, v, p)
+    render() {
+        // this.mShader.active()
+        // this.mShader.setTexture("U_texture", this.mTexture);
+        // this.mShader.setMVP(m, v, p)
         for (let i = 0; i < 400; ++i) {
             gl.drawArrays(gl.TRIANGLE_STRIP, i * 4, 4)
         }
 
+    }
+    unActive() {
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
     }
 }
