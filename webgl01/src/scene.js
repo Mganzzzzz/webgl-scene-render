@@ -50,7 +50,7 @@ async function initGround() {
     await ground.init()
     const sceneNode = new SceneNode()
     sceneNode.init(ground, lightColorMaterial)
-    sceneNode.mModelMatrix = m4.translation(0, -1.5, -10, model_matrix)
+    sceneNode.mModelMatrix = m4.translation(0, -1.5, 0)
     addScene(sceneNode)
 }
 
@@ -70,7 +70,7 @@ async function initSphere() {
     model = new Model()
     await model.init()
     const sceneNode = new SceneNode()
-    sceneNode.mModelMatrix = m4.translation(0, -1.5, -10, model_matrix)
+    sceneNode.mModelMatrix = m4.translation(0, 0, -10)
     sceneNode.init(model, material)
     addScene(sceneNode)
 }
