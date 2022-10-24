@@ -10,7 +10,7 @@ export function createBufferObject(glEnum = gl.ARRAY_BUFFER, bufferData, usage =
 export function createTexture2DFromImg(image) {
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
         new Uint8Array([0, 0, 255, 255]));
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -28,7 +28,7 @@ export async function createTextureFromUrl(path) {
 
     image.src = path;
     return new Promise((resolve, reject) => {
-        image.addEventListener('load', function () {
+        image.addEventListener('load', function() {
             // Now that the image has loaded make copy it to the texture.
             const texture = createTexture2DFromImg(image)
             resolve(texture)

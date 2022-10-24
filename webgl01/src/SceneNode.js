@@ -16,6 +16,9 @@ export class SceneNode extends LinkedList {
 
     update(v, p) {
         this.mGeometry.update(v, p)
+        if (this.next) {
+            this.next.update(v, p)
+        }
     }
 
     render(v, p) {
