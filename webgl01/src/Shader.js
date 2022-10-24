@@ -37,6 +37,9 @@ export class Shader {
             mPLocation,
             mVLocation,
         } = this
+        this.mModelMatrix = m
+        this.mViewMatrix = v
+        this.mProjectionMatrix = p
         gl.uniformMatrix4fv(mMLocation, false, m);
         gl.uniformMatrix4fv(mVLocation, false, v);
         gl.uniformMatrix4fv(mPLocation, false, p);

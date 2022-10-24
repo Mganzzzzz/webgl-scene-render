@@ -1,13 +1,14 @@
 import {createBufferObject, loadFileFromUrl} from "./utils";
 import {VertexBuffer} from "./VertexBuffer";
+import {Geometry} from "./Geometry";
 
 // import Quad from './static/Quad.obj'
 
-export class Model {
-    constructor(shader) {
-        this.shader = shader
+export class Model extends Geometry {
+    constructor() {
+        super()
         this.vbo = null
-        this.mVertexBuffer = new VertexBuffer
+        this.mVertexBuffer = new VertexBuffer()
         this.mAmbientMaterial = [0, 0, 0, 0]
         this.mDiffuseMaterial = [0, 0, 0, 0]
         this.mSpecularMaterial = [0, 0, 0, 0]
@@ -21,22 +22,22 @@ export class Model {
         const file = await loadFileFromUrl('/src/static/Sphere.obj')
         const lines = file.split('\n')
         lines.forEach(line => {
-            if(line.startsWith('v')) {
-                if(line.startsWith('v ')) {
+            if (line.startsWith('v')) {
+                if (line.startsWith('v ')) {
                     let tmp = line.replace('v ', '').split(' ')
                     tmp = tmp.map(t => parseFloat(t))
                     positions.push(tmp)
-                } else if(line.startsWith('vt ')) {
+                } else if (line.startsWith('vt ')) {
                     let tmp = line.replace('vt ', '').split(' ')
                     tmp = tmp.map(t => parseFloat(t))
                     texcoords.push(tmp)
-                } else if(line.startsWith('vn ')) {
+                } else if (line.startsWith('vn ')) {
                     let tmp = line.replace('vn ', '').split(' ')
                     tmp = tmp.map(t => parseFloat(t))
                     normals.push(tmp)
                 }
             } else {
-                if(line.startsWith('f ')) {
+                if (line.startsWith('f ')) {
                     let faces = line.replace('f ', '').split(' ')
                     faces.forEach(face => {
                         const [pIdx, tIdx, nIdx] = face.split('/').map(n => parseInt(n) - 1)
@@ -66,19 +67,10 @@ export class Model {
     }
 
     active() {
-
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     }
 
-    render(m, v, p) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
-        this.shader.active()
-        this.shader.setMVP(m, v, p)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientLight'), 0.1, 0.1, 0.1, 1.0)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_AmbientMaterial'), 0.1, 0.1, 0.1, 1.0)
-
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_DiffuseLight'), 0.8, 0.8, 0.8, 1.0)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_DiffuseMaterial'), 0.4, 0.4, 0.4, 1.0)
-        gl.uniform4f(gl.getUniformLocation(this.shader.mProgram, 'U_LightPos'), 0.0, 1.0, 0.0, 0.0)
+    render() {
         gl.drawArrays(gl.TRIANGLES, 0, this.mVertexBuffer.vertexData.length)
     }
 
