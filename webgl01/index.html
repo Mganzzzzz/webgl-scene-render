@@ -172,7 +172,7 @@
     uniform sampler2D U_texture;
     varying vec4 V_Color;
     void main() {
-        gl_FragColor= texture2D(U_texture, V_texcord.xy);
+        gl_FragColor= V_Color * texture2D(U_texture, V_texcord.xy);
     }
 </script>
 
