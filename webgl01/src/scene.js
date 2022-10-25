@@ -26,7 +26,7 @@ var view_matrix = m4.identity()
 var model_matrix = m4.identity()
 
 function addScene(sceneNode) {
-    if(!rootScene) {
+    if (!rootScene) {
         rootScene = sceneNode
     } else {
         rootScene.add(sceneNode)
@@ -78,7 +78,7 @@ async function initNiutouMaterial() {
     niutouColorMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
     niutouColorMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
     niutouColorMaterial.setVec4('U_DiffuseLight', [0.1, 0.4, 0.5, 1.0])
-    niutouColorMaterial.setVec4('U_DiffuseMaterial', [0.8, 0.8, 0.8, 1.0])
+    niutouColorMaterial.setVec4('U_DiffuseMaterial', [1.0, 1.0, 1.0, 1.0])
     niutouColorMaterial.setVec4('U_LightPos', [1, 1, 1, 1.0])
     niutouColorMaterial.setTexture('U_texture', texture)
 }
@@ -87,11 +87,12 @@ async function initNiutou() {
     model = new Model()
     const sceneNode = new SceneNode()
     await model.init('/src/static/niutou.obj', sceneNode)
-    sceneNode.mModelMatrix = m4.translation(0, 0, -10)
     sceneNode.init(model, niutouColorMaterial)
-    sceneNode.mModelMatrix = m4.yRotate(sceneNode.mModelMatrix, degToRad(-90))
-    sceneNode.mModelMatrix = m4.scale(sceneNode.mModelMatrix, 0.025, 0.025, 0.025)
-
+    const modelMatrix = sceneNode.mModelMatrix
+    m4.multiply(sceneNode.mModelMatrix, m4.translation(0, -1, -5), sceneNode.mModelMatrix)
+    m4.multiply(sceneNode.mModelMatrix, m4.scaling(0.025, 0.025, 0.025), modelMatrix)
+    m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(-90)), sceneNode.mModelMatrix)
+    sceneNode.mModelMatrix = modelMatrix
     addScene(sceneNode)
 }
 
