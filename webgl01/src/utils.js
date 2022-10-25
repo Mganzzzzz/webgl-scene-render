@@ -7,7 +7,26 @@ export function createBufferObject(glEnum = gl.ARRAY_BUFFER, bufferData, usage =
     return vbo
 }
 
-export function createTexture2DFromImg(image) {
+// this function will flip the imagedata
+function flipImage(inputImage) {
+    // create a canvas that will present the output image
+    const outputImage = document.createElement('canvas');
+    outputImage.width = inputImage.naturalWidth;
+    outputImage.height = inputImage.naturalHeight;
+    // get the drawing context, needed to draw the new image
+    const ctx = outputImage.getContext('2d');
+    ctx.scale(1, -1);
+    ctx.translate(0, -inputImage.height);
+    ctx.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height, 0, 0, outputImage.width, outputImage.height);
+    // document.body.append(outputImage)
+    // insert the output image after the input image
+    return outputImage
+}
+
+export function createTexture2DFromImg(image, flip = true) {
+    if (flip) {
+        image = flipImage(image)
+    }
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -28,7 +47,7 @@ export async function createTextureFromUrl(path) {
 
     image.src = path;
     return new Promise((resolve, reject) => {
-        image.addEventListener('load', function() {
+        image.addEventListener('load', function () {
             // Now that the image has loaded make copy it to the texture.
             const texture = createTexture2DFromImg(image)
             resolve(texture)
