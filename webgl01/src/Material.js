@@ -36,6 +36,7 @@ export class Material {
 
 
     setVec4(name, vec4) {
+
         let prop = null
         if (this.vec4PropertyMap[name]) {
             prop = this.vec4PropertyMap[name]

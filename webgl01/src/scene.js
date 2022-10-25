@@ -17,6 +17,7 @@ let texture
 let ground
 let model
 let material
+let cameraPos = [0, 0, 0]
 let lightColorMaterial
 let niutouColorMaterial
 let rootScene = null
@@ -69,17 +70,26 @@ async function initLightMaterial() {
     material.setVec4('U_LightPos', [1.0, 0.0, 1.0, 0.0])
 }
 
+
 async function initNiutouMaterial() {
     const texture = await createTextureFromUrl(niutouTexture);
     let shader = new Shader()
     shader.initStandardShader("light_color.vs", "light_color.fs")
     niutouColorMaterial = new Material()
     niutouColorMaterial.init(shader)
-    niutouColorMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
-    niutouColorMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
-    niutouColorMaterial.setVec4('U_DiffuseLight', [0.1, 0.4, 0.5, 1.0])
-    niutouColorMaterial.setVec4('U_DiffuseMaterial', [1.0, 1.0, 1.0, 1.0])
-    niutouColorMaterial.setVec4('U_LightPos', [1, 1, 1, 1.0])
+    niutouColorMaterial.setVec4('U_LightPos', [0, 1, 0, 0.0])
+    niutouColorMaterial.setVec4('U_CameraPos', [...cameraPos, 1.0])
+
+    niutouColorMaterial.setVec4('U_AmbientLight', [0.7, 0.7, 0.7, 1.0])
+    niutouColorMaterial.setVec4('U_AmbientMaterial', [0.8, 0.8, 0.8, 1.0])
+
+    niutouColorMaterial.setVec4('U_DiffuseLight', [1.0, 1.0, 1, 1.0])
+    niutouColorMaterial.setVec4('U_DiffuseMaterial', [0.1, 0.4, 0.7, 1.0])
+
+    niutouColorMaterial.setVec4('U_SpecularMaterial', [1.0, 1.0, 1.0, 1.0])
+    niutouColorMaterial.setVec4('U_SpecularLight', [1.0, 1.0, 1.0, 1.0])
+    niutouColorMaterial.setVec4("U_Setting", [1.0, 4.0, 0.0, 0.0]);
+
     niutouColorMaterial.setTexture('U_texture', texture)
 }
 
@@ -89,7 +99,7 @@ async function initNiutou() {
     await model.init('/src/static/niutou.obj', sceneNode)
     sceneNode.init(model, niutouColorMaterial)
     const modelMatrix = sceneNode.mModelMatrix
-    m4.multiply(sceneNode.mModelMatrix, m4.translation(0, -1, -5), sceneNode.mModelMatrix)
+    m4.multiply(sceneNode.mModelMatrix, m4.translation(3, -1, -8), sceneNode.mModelMatrix)
     m4.multiply(sceneNode.mModelMatrix, m4.scaling(0.025, 0.025, 0.025), modelMatrix)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(-90)), sceneNode.mModelMatrix)
     sceneNode.mModelMatrix = modelMatrix
@@ -109,11 +119,11 @@ export async function init() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 2000);
-    view_matrix = m4.lookAt([0, 0, 0], [0, 0, -1], [0, 1, 0]);
-    // await initLightColorMaterial()
+    view_matrix = m4.lookAt(cameraPos, [0, 0, -1], [0, 1, 0]);
+    await initLightMaterial()
     await initNiutouMaterial()
     // await initLightMaterial()
-    // await initSphere()
+    await initSphere()
     await initNiutou()
     // await initGround()
 }
@@ -121,7 +131,7 @@ export async function init() {
 export async function render() {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
-    gl.clearColor(0.0, 0.0, 0.0, 1.0)
+    gl.clearColor(0.1, 0.1, 0.1, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     rootScene.update(view_matrix, projection_matrix)
     rootScene.render(view_matrix, projection_matrix)
