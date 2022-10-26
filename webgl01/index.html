@@ -145,11 +145,12 @@
     varying vec4 V_Color;
     varying vec4 V_Position;
     varying vec4 V_Normal;
+    varying vec4 V_WorldPosition;
 
     void main() {
         V_Color=color;
         V_Normal = normal;
-        V_Position = M * position;
+        V_WorldPosition = M * position;
         gl_Position=P*V*M*position;
     }
 
@@ -173,10 +174,11 @@
     varying vec4 V_Color;
     varying vec4 V_Position;
     varying vec4 V_Normal;
+    varying vec4 V_WorldPosition;
 
     void main() {
         vec3 L= U_LightPos.xyz;
-        vec4 world_pos = V_Position;
+        vec4 world_pos = V_WorldPosition;
         vec3 OL = U_LightPos.xyz - world_pos.xyz;
         float d = length(OL);// 光源距离当前面的距离
         OL = normalize(OL);// 点光源方向计算
