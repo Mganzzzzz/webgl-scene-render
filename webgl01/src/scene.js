@@ -27,6 +27,7 @@ var fieldOfViewRadians = degToRad(45);
 var projection_matrix = m4.identity()
 var view_matrix = m4.identity()
 var model_matrix = m4.identity()
+let sphereNode = null
 
 function addScene(sceneNode) {
     if (!rootScene) {
@@ -123,7 +124,7 @@ async function initNiutou() {
 async function initSphere() {
     model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Sphere.obj', sceneNode)
+    await model.init('/src/static/Cube.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(1.5, -1, -6)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
     sceneNode.init(model, material)
@@ -133,15 +134,41 @@ async function initSphere() {
 async function initSphere2() {
     model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Sphere.obj', sceneNode)
+    await model.init('/src/static/Cube.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(-1.5, -1, -6)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
     sceneNode.init(model, pointLightMaterial)
+    sphereNode = sceneNode
     addScene(sceneNode)
+}
+
+function bindEvents() {
+    let mouseDown = false
+    let startPoint = null
+    gl.canvas.addEventListener('mousemove', (e) => {
+        if (mouseDown) {
+            const {clientX, clientY} = e
+            const {clientX: startX, clientY: startY} = startPoint
+            let x = clientX - startX
+            let y = clientY - startY
+            let xAngle = x / gl.canvas.width * 10
+            let yAngle = y / gl.canvas.height * 10
+            m4.multiply(sphereNode.mModelMatrix, m4.yRotation(degToRad(xAngle)), sphereNode.mModelMatrix)
+            m4.multiply(sphereNode.mModelMatrix, m4.xRotation(degToRad(yAngle)), sphereNode.mModelMatrix)
+        }
+    })
+    gl.canvas.addEventListener('mousedown', (e) => {
+        mouseDown = true
+        startPoint = e
+    })
+    gl.canvas.addEventListener('mouseup', () => {
+        mouseDown = false
+    })
 }
 
 export async function init() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+    bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 2000);
     view_matrix = m4.lookAt(cameraPos, [0, 0, -1], [0, 1, 0]);

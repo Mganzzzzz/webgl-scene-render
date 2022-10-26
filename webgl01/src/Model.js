@@ -71,7 +71,7 @@ export class Model extends Geometry {
 
     update(v, p) {
         if (this.sceneNode.mModelMatrix) {
-            this.sceneNode.mModelMatrix = m4.yRotate(this.sceneNode.mModelMatrix, degToRad(-0.15))
+            // this.sceneNode.mModelMatrix = m4.yRotate(this.sceneNode.mModelMatrix, degToRad(-0.15))
         }
     }
 
