@@ -63,11 +63,11 @@ async function initLightMaterial() {
     shader.initStandardShader("light.vs", "light.fs")
     material = new Material()
     material.init(shader)
-    material.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
+    material.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
     material.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
-    material.setVec4('U_DiffuseLight', [0.8, 0.8, 0.8, 1.0])
-    material.setVec4('U_DiffuseMaterial', [0.4, 0.4, 0.4, 1.0])
-    material.setVec4('U_LightPos', [1.0, 0.0, 1.0, 0.0])
+    material.setVec4('U_DiffuseLightColor', [0.1, 0.4, 0.7, 1.0])
+    material.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    material.setVec4('U_LightPos', [0.0, 1.0, 1.0, 0.0])
 }
 
 
@@ -109,8 +109,10 @@ async function initNiutou() {
 async function initSphere() {
     model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Sphere.obj', sceneNode)
-    sceneNode.mModelMatrix = m4.translation(0, 0, -10)
+    await model.init('/src/static/Cube.obj', sceneNode)
+    sceneNode.mModelMatrix = m4.translation(1.5, -1, -6)
+    m4.multiply(sceneNode.mModelMatrix, m4.xRotation(degToRad(30)), sceneNode.mModelMatrix)
+    m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(30)), sceneNode.mModelMatrix)
     sceneNode.init(model, material)
     addScene(sceneNode)
 }
@@ -121,10 +123,10 @@ export async function init() {
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 2000);
     view_matrix = m4.lookAt(cameraPos, [0, 0, -1], [0, 1, 0]);
     await initLightMaterial()
-    await initNiutouMaterial()
+    // await initNiutouMaterial()
     // await initLightMaterial()
     await initSphere()
-    await initNiutou()
+    // await initNiutou()
     // await initGround()
 }
 

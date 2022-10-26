@@ -29,7 +29,7 @@ export class Shader {
         this.mMLocation = gl.getUniformLocation(mProgram, "M");
         this.mPLocation = gl.getUniformLocation(mProgram, "P");
         this.mVLocation = gl.getUniformLocation(mProgram, "V");
-        this.mIT_ModelMatrixLocation = gl.getUniformLocation(mProgram, "IT_M");
+        this.mIT_MLocation = gl.getUniformLocation(mProgram, "IT_ModelMatrix");
     }
 
     setMVP(m, v, p) {
@@ -50,8 +50,8 @@ export class Shader {
 
         let it_m = m4.inverse(m)
         it_m = m4.transpose(it_m)
-        if (this.mIT_ModelMatrixLocation > 0) {
-            gl.uniformMatrix4fv(this.mIT_ModelMatrixLocation, false, it_m)
+        if (this.mIT_MLocation) {
+            gl.uniformMatrix4fv(this.mIT_MLocation, false, it_m)
         }
     }
 
