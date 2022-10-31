@@ -10,6 +10,7 @@ import {Material} from "./Material";
 import testTexture from './static/test.png'
 import fTexture from './static/f-texture.png'
 import niutouTexture from './static/niutou.png'
+import {Camera} from "./Camera";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
@@ -17,6 +18,7 @@ let texture
 let ground
 let model
 let material
+let camera = new Camera()
 let cameraPos = [0, 0, 0]
 let lightPosition = [0.0, 1.0, 1.0, 1.0]
 let pointLightMaterial
@@ -146,23 +148,20 @@ function bindEvents() {
     let mouseDown = false
     let startPoint = null
     gl.canvas.addEventListener('mousemove', (e) => {
-        if (mouseDown) {
-            const {clientX, clientY} = e
-            const {clientX: startX, clientY: startY} = startPoint
-            let x = clientX - startX
-            let y = clientY - startY
-            let xAngle = x / gl.canvas.width * 10
-            let yAngle = y / gl.canvas.height * 10
-            m4.multiply(sphereNode.mModelMatrix, m4.yRotation(degToRad(xAngle)), sphereNode.mModelMatrix)
-            m4.multiply(sphereNode.mModelMatrix, m4.xRotation(degToRad(yAngle)), sphereNode.mModelMatrix)
-        }
+        // console.log('debug e', e)
+        camera.onMouseMoveEvent(e)
     })
     gl.canvas.addEventListener('mousedown', (e) => {
-        mouseDown = true
-        startPoint = e
+        camera.onMouseDownEvent(e)
     })
-    gl.canvas.addEventListener('mouseup', () => {
-        mouseDown = false
+    gl.canvas.addEventListener('mouseup', (e) => {
+        camera.onMouseUpEvent(e)
+    })
+    window.addEventListener('keydown', (e) => {
+        camera.inKeyEvent(e)
+    })
+    window.addEventListener('keyup', (e) => {
+        camera.inKeyEvent(e)
     })
 }
 
@@ -171,7 +170,7 @@ export async function init() {
     bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 2000);
-    view_matrix = m4.lookAt(cameraPos, [0, 0, -1], [0, 1, 0]);
+    view_matrix = camera.mViewMatrix;
     await initLightMaterial()
     await initPointLightMaterial()
     // await initNiutouMaterial()
@@ -187,6 +186,8 @@ export async function render() {
     gl.enable(gl.DEPTH_TEST)
     gl.clearColor(0.1, 0.1, 0.1, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    camera.update(0.016)
+    view_matrix = camera.mViewMatrix;
     rootScene.update(view_matrix, projection_matrix)
     rootScene.render(view_matrix, projection_matrix)
 }

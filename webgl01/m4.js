@@ -247,6 +247,38 @@
    * Computes the dot product of two vectors; assumes both vectors have
    * three entries.
    * @param {Vector3} a Operand vector.
+   * @param {number} b Operand vector.
+   * @param {Vector3} dst optional vector3 to store result
+   * @return {number} dot product
+   * @memberOf module:webgl-3d-math
+   */
+  function multiplyNumber(a, b,dst) {
+    dst = dst || new MatType(3);
+    dst[0] = a[0] * b
+    dst[1] = a[1] * b
+    dst[2] = a[2] * b
+
+    return dst
+  }
+
+
+  /**
+   * Computes the dot product of two vectors; assumes both vectors have
+   * three entries.
+   * @param {Vector3} a Operand vector.
+   * @param {Vector3} b Operand vector.
+   * @return {number} dot product
+   * @memberOf module:webgl-3d-math
+   */
+  function multiplyVectors(a, b) {
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+  }
+
+   /**
+   * Computes the dot product of two vectors; assumes both vectors have
+   * three entries.
+   * @param {Vector3} a Operand vector.
    * @param {Vector3} b Operand vector.
    * @return {number} dot product
    * @memberOf module:webgl-3d-math
@@ -1460,6 +1492,8 @@
     transformDirection: transformDirection,
     transformNormal: transformNormal,
     setDefaultType: setDefaultType,
+    multiplyNumber: multiplyNumber,
+    multiplyVectors: multiplyVectors,
   };
 
 }));

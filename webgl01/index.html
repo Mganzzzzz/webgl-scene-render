@@ -13,6 +13,7 @@
         canvas {
             border: 1px solid lightblue;
         }
+
     </style>
 </head>
 <script type="x-shader/x-vertex" id="test.vs">
@@ -277,12 +278,30 @@
 <!--<div id="app"></div>-->
 <script src="webgl-utils.js"></script>
 <script src="m4.js"></script>
-<canvas id="c" width="800" height="600"></canvas>
+<canvas class="" id="c" width="800" height="600"></canvas>
+<div id="wrap" style="display:none;">
+</div>
 <script>
     window.canvas = document.querySelector("#c");
     window.gl = canvas.getContext("webgl");
+    //
+    wrap.oncontextmenu = canvas.oncontextmenu = function (ev) {
+
+        wrap.style.left = ev.clientX + "px";
+        wrap.style.top = ev.clientY + "px";
+        wrap.style.display = "block";
+        ev.preventDefault();
+    }
+    wrap.onclick = canvas.onclick = function () {
+        wrap.style.display = "none";
+    }
 </script>
 
 <script type="module" src="/src/main.js"></script>
+<style>
+    .no-cursor {
+        cursor: none;
+    }
+</style>
 </body>
 </html>
