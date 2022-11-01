@@ -17,7 +17,7 @@ export class Camera {
     }
 
     update(deltatime) {
-        let speed = 5.0
+        let speed = 1.0
         // 计算出视线的向量
         let forwardDirection = m4.subtractVectors(this.mViewCenter, this.mPosition)
         forwardDirection = m4.normalize(forwardDirection);
@@ -59,7 +59,6 @@ export class Camera {
         // 计算出右手的向量 用视线向量 叉除 up向量
         let rightDirection = m4.cross(forwardDirection, this.mUp);
         rightDirection = m4.normalize(rightDirection);
-        console.log('debug rightDirection', rightDirection)
         let [x, y, z] = rightDirection
         this.rotateView(angle, x, y, z);
     }
@@ -101,6 +100,8 @@ export class Camera {
             let angleUp = deltaX / 1000
             this.yaw(-angleUp)
             this.pitch(-angleRight)
+            this.originPoint.clientX = e.clientX
+            this.originPoint.clientY = e.clientY
         }
     }
 
