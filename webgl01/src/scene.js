@@ -127,7 +127,7 @@ async function initSphere() {
     model = new Model()
     const sceneNode = new SceneNode()
     await model.init('/src/static/Cube.obj', sceneNode)
-    sceneNode.mModelMatrix = m4.translation(1.5, -1, -6)
+    sceneNode.mModelMatrix = m4.translation(0, 0, -10)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
     sceneNode.init(model, material)
     addScene(sceneNode)
@@ -173,12 +173,13 @@ export async function init() {
     view_matrix = camera.mViewMatrix;
     await initLightMaterial()
     await initPointLightMaterial()
+    await initLightColorMaterial()
     // await initNiutouMaterial()
     // await initLightMaterial()
     await initSphere()
-    await initSphere2()
+    // await initSphere2()
     // await initNiutou()
-    // await initGround()
+    await initGround()
 }
 
 export async function render() {
@@ -188,6 +189,6 @@ export async function render() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     camera.update(0.016)
     view_matrix = camera.mViewMatrix;
-    rootScene.update(view_matrix, projection_matrix)
+    // rootScene.update(view_matrix, projection_matrix)
     rootScene.render(view_matrix, projection_matrix)
 }

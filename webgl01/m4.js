@@ -404,8 +404,7 @@
     dst[13] = cameraPosition[1];
     dst[14] = cameraPosition[2];
     dst[15] = 1;
-
-    return dst;
+    return this.inverse(dst);
   }
 
   /**

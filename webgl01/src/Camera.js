@@ -4,46 +4,46 @@ export class Camera {
             clientX: 0,
             clientY: 0,
         }
-        this.mPosition = new Float32Array([0, 0, 0])
-        this.mViewCenter = new Float32Array([0, 0, -1])
-        this.mUp = new Float32Array([0, 1, 0])
+        this.mPosition = ([0, 0, 0])
+        this.mViewCenter = ([0, 0, -1])
+        this.mUp = ([0, 1, 0])
         this.mbForward = false
         this.mbBackward = false
         this.mbLeft = false
         this.mbRight = false
         this.isRotateView = false
-        this.mViewMatrix = m4.lookAt(this.mPosition, [0, 0, -1], [0, 1, 0]);
-
+        this.mViewMatrix = m4.lookAt(this.mPosition, this.mViewCenter, this.mUp);
     }
 
     update(deltatime) {
-        let speed = 1.0
+        let speed = 3
         // 计算出视线的向量
         let forwardDirection = m4.subtractVectors(this.mViewCenter, this.mPosition)
         forwardDirection = m4.normalize(forwardDirection);
         // 计算出右手的向量 用视线向量 叉除 up向量
         let rightDirection = m4.cross(forwardDirection, this.mUp);
         rightDirection = m4.normalize(rightDirection);
+        // console.log('debug rightDirection', rightDirection)
 
         if (this.mbForward) {
             let delta = m4.multiplyNumber(forwardDirection, deltatime * speed);
-            this.mPosition = m4.subtractVectors(this.mPosition, delta);
-            this.mViewCenter = m4.subtractVectors(this.mViewCenter, delta);
+            this.mPosition = m4.addVectors(this.mPosition, delta);
+            this.mViewCenter = m4.addVectors(this.mViewCenter, delta);
         }
         if (this.mbBackward) {
             let delta = m4.multiplyNumber(forwardDirection, deltatime * speed);
-            this.mPosition = m4.addVectors(this.mPosition, delta);
-            this.mViewCenter = m4.addVectors(this.mViewCenter, delta);
+            this.mPosition = m4.subtractVectors(this.mPosition, delta);
+            this.mViewCenter = m4.subtractVectors(this.mViewCenter, delta);
         }
         if (this.mbLeft) {
             let delta = m4.multiplyNumber(rightDirection, deltatime * speed);
-            this.mPosition = m4.addVectors(this.mPosition, delta);
-            this.mViewCenter = m4.addVectors(this.mViewCenter, delta);
+            this.mPosition = m4.subtractVectors(this.mPosition, delta);
+            this.mViewCenter = m4.subtractVectors(this.mViewCenter, delta);
         }
         if (this.mbRight) {
             let delta = m4.multiplyNumber(rightDirection, deltatime * speed);
-            this.mPosition = m4.subtractVectors(this.mPosition, delta);
-            this.mViewCenter = m4.subtractVectors(this.mViewCenter, delta);
+            this.mPosition = m4.addVectors(this.mPosition, delta);
+            this.mViewCenter = m4.addVectors(this.mViewCenter, delta);
         }
         this.mViewMatrix = m4.lookAt(this.mPosition, this.mViewCenter, this.mUp);
     }
@@ -76,6 +76,7 @@ export class Camera {
         // 新的视线向量
         let newViewDirection = [m4.multiplyVectors(tempX, forwardDirection), m4.multiplyVectors(tempY, forwardDirection), m4.multiplyVectors(tempZ, forwardDirection)];
         this.mViewCenter = m4.addVectors(this.mPosition, newViewDirection);
+        // console.log('debug this.mViewCenter', this.mViewCenter)
         // console.log('debug ', )
     }
 
@@ -98,8 +99,8 @@ export class Camera {
             let deltaY = e.clientY - this.originPoint.clientY
             let angleRight = deltaY / 1000
             let angleUp = deltaX / 1000
-            this.yaw(-angleUp)
-            this.pitch(-angleRight)
+            this.yaw(angleUp)
+            this.pitch(angleRight)
             this.originPoint.clientX = e.clientX
             this.originPoint.clientY = e.clientY
         }
