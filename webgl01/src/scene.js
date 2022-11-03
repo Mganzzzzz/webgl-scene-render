@@ -182,12 +182,12 @@ export async function init() {
     await initGround()
 }
 
-export async function render() {
+export async function render(deltaTime) {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
     gl.clearColor(0.1, 0.1, 0.1, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    camera.update(0.016)
+    camera.update(deltaTime)
     view_matrix = camera.mViewMatrix;
     // rootScene.update(view_matrix, projection_matrix)
     rootScene.render(view_matrix, projection_matrix)
