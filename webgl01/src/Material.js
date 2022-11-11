@@ -24,6 +24,12 @@ export class TextureProperty {
 
 export class Material {
     constructor() {
+        this.mbEnableDepthTest = true;
+        this.mbEnableProgramablePointSize = false;
+        this.mbEnableBlend = false;
+        this.mSRCBlendFunc = gl.SRC_ALPHA;
+        this.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
+
         this.shader = null
         this.vec4PropertyMap = {}
         this.mat4PropertyMap = {}
@@ -93,6 +99,25 @@ export class Material {
     }
 
     active(v, p) {
+        if (this.mbEnableDepthTest) {
+            gl.enable(gl.DEPTH_TEST);
+        } else {
+            gl.disable(gl.DEPTH_TEST);
+        }
+        // if (this.mbEnableProgramablePointSize) {
+        //     gl.enable(gl.PROGRAM_POINT_SIZE);
+        // } else {
+        //     gl.disable(gl.PROGRAM_POINT_SIZE);
+        // }
+
+
+        if (this.mbEnableBlend) {
+            gl.enable(gl.BLEND);
+            gl.blendFunc(this.mSRCBlendFunc, this.mDSTBlendFunc);
+        } else {
+            gl.disable(gl.BLEND);
+        }
+
         this.shader.active()
         this.shader.setMVP(this.mat4PropertyMap['M'].mat4, v, p)
         Object.values(this.mat4PropertyMap).forEach((prop) => {

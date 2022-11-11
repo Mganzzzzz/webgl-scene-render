@@ -14,10 +14,10 @@ export class SceneNode extends LinkedList {
     }
 
 
-    update(v, p) {
-        this.mGeometry.update(v, p)
+    update(v, p, deltaTime) {
+        this.mGeometry.update(v, p, deltaTime)
         if (this.next) {
-            this.next.update(v, p)
+            this.next.update(v, p, deltaTime)
         }
     }
 

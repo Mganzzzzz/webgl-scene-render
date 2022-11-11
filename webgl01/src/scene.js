@@ -1,5 +1,5 @@
 import {degToRad} from "./math/math_utils";
-import {createBufferObject, createTextureFromUrl} from "./utils";
+import {createBufferObject, createProcedureTexture, createTextureFromUrl} from "./utils";
 import testImg from './static/test.png'
 import {Shader} from "./Shader";
 import {VertexBuffer} from "./VertexBuffer";
@@ -11,6 +11,7 @@ import testTexture from './static/test.png'
 import fTexture from './static/f-texture.png'
 import niutouTexture from './static/niutou.png'
 import {Camera} from "./Camera";
+import {Particle} from "./Particle";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
@@ -24,6 +25,9 @@ let lightPosition = [0.0, 1.0, 1.0, 1.0]
 let pointLightMaterial
 let lightColorMaterial
 let niutouColorMaterial
+let particle
+let particleMaterial
+let particleTexture
 let rootScene = null
 var fieldOfViewRadians = degToRad(45);
 var projection_matrix = m4.identity()
@@ -51,14 +55,14 @@ async function initLightColorMaterial() {
     lightColorMaterial.setVec4('U_DiffuseLight', [0.8, 0.8, 0.8, 1.0])
     lightColorMaterial.setVec4('U_DiffuseMaterial', [0.4, 0.4, 0.4, 1.0])
     lightColorMaterial.setVec4('U_LightPos', [0.0, 1.0, 0.0, 0.0])
-    lightColorMaterial.setTexture('U_texture', texture)
+    // lightColorMaterial.setTexture('U_texture', texture)
 }
 
 async function initGround() {
     ground = new Ground()
     await ground.init()
     const sceneNode = new SceneNode()
-    sceneNode.init(ground, lightColorMaterial)
+    sceneNode.init(ground, pointLightMaterial)
     sceneNode.mModelMatrix = m4.translation(0, -1.5, 0)
     addScene(sceneNode)
 }
@@ -87,6 +91,26 @@ async function initPointLightMaterial() {
     pointLightMaterial.setVec4('U_LightPos', lightPosition)
 }
 
+async function initParticleSystem() {
+    particle = new Particle()
+    particle.init(1000)
+    const sceneNode = new SceneNode()
+    sceneNode.mModelMatrix = m4.translation(0, 0, 0)
+    sceneNode.init(particle, particleMaterial)
+    addScene(sceneNode)
+}
+
+async function initParticleMaterial() {
+    let shader = new Shader()
+    shader.initStandardShader("particle.vs", "particle.fs")
+    particleMaterial = new Material()
+    particleMaterial.init(shader)
+    particleMaterial.mbEnableBlend = true;
+    const particleTexture = await createProcedureTexture(128);
+    particleMaterial.setTexture('U_texture', particleTexture)
+    particleMaterial.mbEnableProgramablePointSize = true;
+    particleMaterial.mbEnableDepthTest = false;
+}
 
 async function initNiutouMaterial() {
     const texture = await createTextureFromUrl(niutouTexture);
@@ -169,26 +193,28 @@ export async function init() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 2000);
+    projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 4000);
     view_matrix = camera.mViewMatrix;
+
+    await initParticleMaterial()
     await initLightMaterial()
     await initPointLightMaterial()
     await initLightColorMaterial()
-    // await initNiutouMaterial()
-    // await initLightMaterial()
-    await initSphere()
-    // await initSphere2()
-    // await initNiutou()
+    await initNiutouMaterial()
+    // await initSphere()
+    await initParticleSystem()
+    await initSphere2()
+    await initNiutou()
     await initGround()
 }
 
 export async function render(deltaTime) {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
-    gl.clearColor(0.1, 0.1, 0.1, 1.0)
+    gl.clearColor(0.1, 0.4, 0.6, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     camera.update(deltaTime)
     view_matrix = camera.mViewMatrix;
-    // rootScene.update(view_matrix, projection_matrix)
-    rootScene.render(view_matrix, projection_matrix)
+    rootScene.update(view_matrix, projection_matrix, deltaTime)
+    rootScene&&rootScene.render(view_matrix, projection_matrix)
 }

@@ -27,15 +27,15 @@ export class Model extends Geometry {
         lines.forEach(line => {
             if (line.startsWith('v')) {
                 if (line.startsWith('v ')) {
-                    let tmp = line.replace('v ', '').split(' ')
+                    let tmp = line.replace('v ', '').split(' ').filter(n => n).map(n => n.trim())
                     tmp = tmp.map(t => parseFloat(t))
                     positions.push(tmp)
                 } else if (line.startsWith('vt ')) {
-                    let tmp = line.replace('vt ', '').split(' ')
+                    let tmp = line.replace('vt ', '').split(' ').filter(n => n).map(n => n.trim())
                     tmp = tmp.map(t => parseFloat(t))
                     texcoords.push(tmp)
                 } else if (line.startsWith('vn ')) {
-                    let tmp = line.replace('vn ', '').split(' ')
+                    let tmp = line.replace('vn ', '').split(' ').filter(n => n).map(n => n.trim())
                     tmp = tmp.map(t => parseFloat(t))
                     normals.push(tmp)
                 }
@@ -47,11 +47,13 @@ export class Model extends Geometry {
                         const position = positions[pIdx]
                         let texcoord = texcoords[tIdx]
                         const normal = normals[nIdx]
-                        vertexData.push({
-                            position,
-                            texcoord,
-                            normal,
-                        })
+                        if (position && normal && texcoord) {
+                            vertexData.push({
+                                position,
+                                texcoord,
+                                normal,
+                            })
+                        }
                     })
                 }
             }

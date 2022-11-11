@@ -1,22 +1,25 @@
 export class Camera {
     constructor() {
+        this.speed = 30
         this.originPoint = {
             clientX: 0,
             clientY: 0,
         }
-        this.mPosition = ([0, 0, 0])
+        this.mPosition = ([0, 0, -10])
         this.mViewCenter = ([0, 0, -1])
         this.mUp = ([0, 1, 0])
+        // this.load()
         this.mbForward = false
         this.mbBackward = false
         this.mbLeft = false
         this.mbRight = false
         this.isRotateView = false
+
         this.mViewMatrix = m4.lookAt(this.mPosition, this.mViewCenter, this.mUp);
     }
 
     update(deltatime) {
-        let speed = 3
+        let speed = this.speed
         // 计算出视线的向量
         let forwardDirection = m4.subtractVectors(this.mViewCenter, this.mPosition)
         forwardDirection = m4.normalize(forwardDirection);
@@ -45,7 +48,26 @@ export class Camera {
             this.mPosition = m4.addVectors(this.mPosition, delta);
             this.mViewCenter = m4.addVectors(this.mViewCenter, delta);
         }
+
         this.mViewMatrix = m4.lookAt(this.mPosition, this.mViewCenter, this.mUp);
+        this.save()
+    }
+
+    load() {
+        let s = sessionStorage.getItem('camera')
+        if (s) {
+            s = JSON.parse(s)
+            const [a, b, c] = s
+            this.mPosition = a
+            this.mViewCenter = b
+            this.mUp = c
+        }
+    }
+
+    save() {
+        const a = [this.mPosition, this.mViewCenter, this.mUp]
+        const s = JSON.stringify(a)
+        sessionStorage.setItem('camera', s)
     }
 
     yaw(angle) {

@@ -1,3 +1,5 @@
+import _ from 'lodash'
+window._ = _
 import {init, render} from "./scene";
 
 let lastTime = 0
