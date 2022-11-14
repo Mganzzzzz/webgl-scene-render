@@ -12,6 +12,7 @@
 
         canvas {
             border: 1px solid lightblue;
+            cursor: none;
         }
 
     </style>
@@ -297,6 +298,36 @@
     void main(){
         gl_FragColor= V_Color*texture2D(U_texture, gl_PointCoord.xy);
     }
+</script>
+
+<script type="x-shader/x-vertex" id="sprite.vs">
+    precision mediump float;
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec2 texcoord;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+    void main(){
+        V_Color=color;
+        V_texcord = texcoord;
+        gl_Position=P*V*M*position;
+    }
+
+
+</script>
+
+<script type="x-shader/x-fragment" id="sprite.fs">
+    precision mediump float;
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+    uniform sampler2D U_texture;
+    void main(){
+        gl_FragColor= V_Color * texture2D(U_texture, V_texcord);
+    }
+
 </script>
 
 <body>

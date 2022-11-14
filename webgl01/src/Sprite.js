@@ -1,0 +1,42 @@
+import {VertexBuffer} from "./VertexBuffer";
+import {createBufferObject, updateBufferObject} from "./utils";
+
+export class Sprite {
+    constructor() {
+        this.vbo = null
+        this.mVertexBuffer = new VertexBuffer()
+        this.mVertexBuffer.setSize(4);
+        this.mVertexBuffer.setTexcoord(0, 0.0, 1.0);
+        this.mVertexBuffer.setTexcoord(1, 0.0, 0.0);
+        this.mVertexBuffer.setTexcoord(2, 1.0, 1.0);
+        this.mVertexBuffer.setTexcoord(3, 1.0, 0.0);
+
+        this.mVertexBuffer.setColor(0, 1.0, 1.0, 1.0);
+        this.mVertexBuffer.setColor(1, 1.0, 0.0, 1.0);
+        this.mVertexBuffer.setColor(2, 1.0, 1.0, 0.0);
+        this.mVertexBuffer.setColor(3, 1.0, 1.0, 1.0);
+        const bufferData = this.mVertexBuffer.getData()
+        this.vbo = createBufferObject(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW)
+    }
+
+    setSize(width, height) {
+        this.mVertexBuffer.setPosition(0, -width / 2.0, -height / 2.0, -2);
+        this.mVertexBuffer.setPosition(1, width / 2.0, -height / 2.0, -2);
+        this.mVertexBuffer.setPosition(2, -width / 2.0, height / 2.0, -2);
+        this.mVertexBuffer.setPosition(3, width / 2.0, height / 2.0, -2);
+        const bufferData = this.mVertexBuffer.getData()
+        updateBufferObject(this.vbo, gl.ARRAY_BUFFER, 0, bufferData);
+    }
+
+    active() {
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    }
+
+    render() {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+    }
+
+    unActive() {
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    }
+}
