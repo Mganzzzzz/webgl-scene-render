@@ -36,6 +36,8 @@ let uiRootScene = null
 var fieldOfViewRadians = degToRad(45);
 var projection_matrix = m4.identity()
 var view_matrix = m4.identity()
+var ui_projection_matrix = m4.identity() // 正交模式 投影矩阵
+var ui_view_matrix = m4.identity() // 正交模式 视口矩阵
 var model_matrix = m4.identity()
 let sphereNode = null
 
@@ -154,7 +156,7 @@ async function initSpriteMaterial() {
     spriteMaterial.mbEnableBlend = true;
     spriteMaterial.mbEnableDepthTest = false;
     spriteMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
-    let texture = await createTextureFromUrl(testTexture);
+    let texture = await createTextureFromUrl(fTexture);
     spriteMaterial.setTexture("U_texture", texture);
 }
 
@@ -194,7 +196,7 @@ async function initSphere2() {
 
 async function initSprite() {
     sprite = new Sprite()
-    sprite.setSize(800, 600)
+    sprite.setSize(10, 10)
     const sceneNode = new SceneNode()
     sceneNode.init(sprite, spriteMaterial)
     addUiScene(sceneNode)
@@ -226,6 +228,8 @@ export async function init() {
     bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 4000);
+    ui_projection_matrix = m4.orthographic(gl.canvas.clientWidth / 2, gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, 200, -400)
+    // ui_projection_matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, -10)
     view_matrix = camera.mViewMatrix;
 
     await initParticleMaterial()
@@ -239,7 +243,7 @@ export async function init() {
     // await initSphere2()
     // await initNiutou()
     await initSprite()
-    // await initGround()
+    await initGround()
 }
 
 export async function render(deltaTime) {
@@ -251,5 +255,5 @@ export async function render(deltaTime) {
     view_matrix = camera.mViewMatrix;
     rootScene && rootScene.update(view_matrix, projection_matrix, deltaTime)
     rootScene && rootScene.render(view_matrix, projection_matrix)
-    uiRootScene && uiRootScene.render(view_matrix, projection_matrix)
+    uiRootScene && uiRootScene.render(ui_view_matrix, projection_matrix)
 }

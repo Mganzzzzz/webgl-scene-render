@@ -469,27 +469,27 @@
    * @return {Matrix4} dst or a new matrix if none provided
    * @memberOf module:webgl-3d-math
    */
-  function orthographic(left, right, bottom, top, near, far, dst) {
-    dst = dst || new MatType(16);
+  function orthographic (left, right, bottom, top, near, far) {
+    return [
+      2 / (right - left), 0, 0, 0,
+      0, 2 / (top - bottom), 0, 0,
+      0, 0, 2 / (near - far), 0,
 
-    dst[ 0] = 2 / (right - left);
-    dst[ 1] = 0;
-    dst[ 2] = 0;
-    dst[ 3] = 0;
-    dst[ 4] = 0;
-    dst[ 5] = 2 / (top - bottom);
-    dst[ 6] = 0;
-    dst[ 7] = 0;
-    dst[ 8] = 0;
-    dst[ 9] = 0;
-    dst[10] = 2 / (near - far);
-    dst[11] = 0;
-    dst[12] = (left + right) / (left - right);
-    dst[13] = (bottom + top) / (bottom - top);
-    dst[14] = (near + far) / (near - far);
-    dst[15] = 1;
+      (left + right) / (left - right),
+      (bottom + top) / (bottom - top),
+      (near + far) / (near - far),
+      1,
+    ];
+  }
 
-    return dst;
+  function projection (width, height, depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return [
+       2 / width, 0, 0, 0,
+       0, -2 / height, 0, 0,
+       0, 0, 2 / depth, 0,
+      -1, 1, 0, 1,
+    ];
   }
 
   /**
@@ -1472,6 +1472,7 @@
     orthographic: orthographic,
     frustum: frustum,
     perspective: perspective,
+    projection: projection,
     translation: translation,
     translate: translate,
     xRotation: xRotation,

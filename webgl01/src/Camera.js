@@ -5,7 +5,7 @@ export class Camera {
             clientX: 0,
             clientY: 0,
         }
-        this.mPosition = ([0, 0, -10])
+        this.mPosition = ([0, 0, 10])
         this.mViewCenter = ([0, 0, -1])
         this.mUp = ([0, 1, 0])
         // this.load()
