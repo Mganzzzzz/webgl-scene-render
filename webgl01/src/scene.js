@@ -12,11 +12,13 @@ import fTexture from './static/f-texture.png'
 import niutouTexture from './static/niutou.png'
 import {Camera} from "./Camera";
 import {Particle} from "./Particle";
+import {Sprite} from "./Sprite";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
 let texture
 let ground
+let sprite
 let model
 let material
 let camera = new Camera()
@@ -24,11 +26,13 @@ let cameraPos = [0, 0, 0]
 let lightPosition = [0.0, 1.0, 1.0, 1.0]
 let pointLightMaterial
 let lightColorMaterial
+let spriteMaterial
 let niutouColorMaterial
 let particle
 let particleMaterial
 let particleTexture
 let rootScene = null
+let uiRootScene = null
 var fieldOfViewRadians = degToRad(45);
 var projection_matrix = m4.identity()
 var view_matrix = m4.identity()
@@ -40,6 +44,14 @@ function addScene(sceneNode) {
         rootScene = sceneNode
     } else {
         rootScene.add(sceneNode)
+    }
+}
+
+function addUiScene(sceneNode) {
+    if (!uiRootScene) {
+        uiRootScene = sceneNode
+    } else {
+        uiRootScene.add(sceneNode)
     }
 }
 
@@ -134,6 +146,18 @@ async function initNiutouMaterial() {
     niutouColorMaterial.setTexture('U_texture', texture)
 }
 
+async function initSpriteMaterial() {
+    let shader = new Shader()
+    shader.initStandardShader("sprite.vs", "sprite.fs")
+    spriteMaterial = new Material()
+    spriteMaterial.init(shader);
+    spriteMaterial.mbEnableBlend = true;
+    spriteMaterial.mbEnableDepthTest = false;
+    spriteMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
+    let texture = await createTextureFromUrl(testTexture);
+    spriteMaterial.setTexture("U_texture", texture);
+}
+
 async function initNiutou() {
     model = new Model()
     const sceneNode = new SceneNode()
@@ -166,6 +190,14 @@ async function initSphere2() {
     sceneNode.init(model, pointLightMaterial)
     sphereNode = sceneNode
     addScene(sceneNode)
+}
+
+async function initSprite() {
+    sprite = new Sprite()
+    sprite.setSize(800, 600)
+    const sceneNode = new SceneNode()
+    sceneNode.init(sprite, spriteMaterial)
+    addUiScene(sceneNode)
 }
 
 function bindEvents() {
@@ -201,11 +233,13 @@ export async function init() {
     await initPointLightMaterial()
     await initLightColorMaterial()
     await initNiutouMaterial()
+    await initSpriteMaterial()
     // await initSphere()
-    await initParticleSystem()
-    await initSphere2()
-    await initNiutou()
-    await initGround()
+    // await initParticleSystem()
+    // await initSphere2()
+    // await initNiutou()
+    await initSprite()
+    // await initGround()
 }
 
 export async function render(deltaTime) {
@@ -215,6 +249,7 @@ export async function render(deltaTime) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     camera.update(deltaTime)
     view_matrix = camera.mViewMatrix;
-    rootScene.update(view_matrix, projection_matrix, deltaTime)
-    rootScene&&rootScene.render(view_matrix, projection_matrix)
+    rootScene && rootScene.update(view_matrix, projection_matrix, deltaTime)
+    rootScene && rootScene.render(view_matrix, projection_matrix)
+    uiRootScene && uiRootScene.render(view_matrix, projection_matrix)
 }
