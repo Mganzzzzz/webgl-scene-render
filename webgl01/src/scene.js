@@ -196,9 +196,9 @@ async function initSphere2() {
 
 async function initSprite() {
     sprite = new Sprite()
-    sprite.setSize(128, 128)
+    sprite.setSize(100, 100)
     const sceneNode = new SceneNode()
-    sceneNode.mModelMatrix = m4.translation(-100, 0, 0)
+    sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
     sceneNode.init(sprite, spriteMaterial)
     addUiScene(sceneNode)
 }
@@ -239,10 +239,10 @@ export async function init() {
     await initLightColorMaterial()
     await initNiutouMaterial()
     await initSpriteMaterial()
-    // await initSphere()
-    // await initParticleSystem()
-    // await initSphere2()
-    // await initNiutou()
+    await initSphere()
+    await initParticleSystem()
+    await initSphere2()
+    await initNiutou()
     await initSprite()
     await initGround()
 }
