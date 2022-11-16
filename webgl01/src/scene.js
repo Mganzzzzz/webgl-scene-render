@@ -196,8 +196,9 @@ async function initSphere2() {
 
 async function initSprite() {
     sprite = new Sprite()
-    sprite.setSize(10, 10)
+    sprite.setSize(128, 128)
     const sceneNode = new SceneNode()
+    sceneNode.mModelMatrix = m4.translation(-100, 0, 0)
     sceneNode.init(sprite, spriteMaterial)
     addUiScene(sceneNode)
 }
@@ -228,8 +229,8 @@ export async function init() {
     bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 4000);
-    ui_projection_matrix = m4.orthographic(gl.canvas.clientWidth / 2, gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, 200, -400)
-    // ui_projection_matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, -10)
+    // 设置正射投影
+    ui_projection_matrix = m4.orthographic(-gl.canvas.clientWidth / 2, gl.canvas.clientWidth / 2, -gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, 200, -400)
     view_matrix = camera.mViewMatrix;
 
     await initParticleMaterial()
@@ -255,5 +256,5 @@ export async function render(deltaTime) {
     view_matrix = camera.mViewMatrix;
     rootScene && rootScene.update(view_matrix, projection_matrix, deltaTime)
     rootScene && rootScene.render(view_matrix, projection_matrix)
-    uiRootScene && uiRootScene.render(ui_view_matrix, projection_matrix)
+    uiRootScene && uiRootScene.render(ui_view_matrix, ui_projection_matrix)
 }
