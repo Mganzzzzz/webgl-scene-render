@@ -1,0 +1,23 @@
+<script type="x-shader/x-vertex" id="light_color.vs">
+    precision mediump float;
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec4 texcoord;
+    attribute vec4 normal;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    uniform mat4 IT_M;// inverse transpose model matrix 逆转置模型矩阵
+    varying vec4 V_texcord;
+    varying vec4 V_WorldPos;
+    varying vec3 V_Normal;
+    void main(){
+        V_texcord = texcoord;
+        vec4 world_pos = M * position;
+        V_Normal = normalize((IT_M * normal).xyz);
+        V_WorldPos= world_pos;
+        gl_Position=P*V*M*position;
+    }
+
+
+</script>

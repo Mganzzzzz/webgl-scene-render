@@ -1,0 +1,16 @@
+<script type="x-shader/x-vertex" id="particle.vs">
+    precision mediump float;
+    attribute vec4 position;
+    attribute vec4 color;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    varying vec4 V_Color;
+    void main(){
+        V_Color=color;
+        gl_PointSize=32.0;
+        gl_Position=P*V*M*position;
+    }
+
+
+</script>

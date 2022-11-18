@@ -61,7 +61,7 @@ function addUiScene(sceneNode) {
 async function initLightColorMaterial() {
     const texture = await createTextureFromUrl(testTexture);
     let shader = new Shader()
-    shader.initStandardShader("light_color.vs", "light_color.fs")
+    await shader.initStandardShader("/src/shaders/light_color.vs.html", "/src/shaders/light_color.fs.html")
     lightColorMaterial = new Material()
     lightColorMaterial.init(shader)
     lightColorMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
@@ -83,7 +83,7 @@ async function initGround() {
 
 async function initLightMaterial() {
     let shader = new Shader()
-    shader.initStandardShader("light.vs", "light.fs")
+    await shader.initStandardShader("/src/shaders/light.vs.html", "/src/shaders/light.fs.html")
     material = new Material()
     material.init(shader)
     material.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
@@ -95,7 +95,7 @@ async function initLightMaterial() {
 
 async function initPointLightMaterial() {
     let shader = new Shader()
-    shader.initStandardShader("point_light.vs", "point_light.fs")
+    await shader.initStandardShader("/src/shaders/point_light.vs.html", "/src/shaders/point_light.fs.html")
     pointLightMaterial = new Material()
     pointLightMaterial.init(shader)
     pointLightMaterial.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
@@ -116,7 +116,7 @@ async function initParticleSystem() {
 
 async function initParticleMaterial() {
     let shader = new Shader()
-    shader.initStandardShader("particle.vs", "particle.fs")
+    await shader.initStandardShader("/src/shaders/particle.vs.html", "/src/shaders/particle.fs.html")
     particleMaterial = new Material()
     particleMaterial.init(shader)
     particleMaterial.mbEnableBlend = true;
@@ -129,7 +129,7 @@ async function initParticleMaterial() {
 async function initNiutouMaterial() {
     const texture = await createTextureFromUrl(niutouTexture);
     let shader = new Shader()
-    shader.initStandardShader("light_color.vs", "light_color.fs")
+    await shader.initStandardShader("/src/shaders/light_color.vs.html", "/src/shaders/light_color.fs.html")
     niutouColorMaterial = new Material()
     niutouColorMaterial.init(shader)
     niutouColorMaterial.setVec4('U_LightPos', [0, 1, 0, 0.0])
@@ -150,7 +150,7 @@ async function initNiutouMaterial() {
 
 async function initSpriteMaterial() {
     let shader = new Shader()
-    shader.initStandardShader("sprite.vs", "sprite.fs")
+    await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
     spriteMaterial = new Material()
     spriteMaterial.init(shader);
     spriteMaterial.mbEnableBlend = true;

@@ -1,0 +1,10 @@
+<script type="x-shader/x-fragment" id="light.fs">
+    // fragment shaders don't have a default precision so we need
+    // to pick one. mediump is a good default
+    precision mediump float;
+    //    varying vec4 V_Color;
+    varying vec4 V_Color;
+    void main() {
+        gl_FragColor= V_Color;
+    }
+</script>

@@ -1,4 +1,5 @@
 import {VertexData} from "./VertexBuffer";
+import {loadHtmlShader} from "./utils";
 
 const FSIZE = Float32Array.BYTES_PER_ELEMENT
 
@@ -19,8 +20,10 @@ export class Shader {
     }
 
 
-    initStandardShader(vs_path, fs_path) {
-        this.mProgram = webglUtils.createProgramFromScripts(gl, [vs_path, fs_path]);
+    async initStandardShader(vs_path, fs_path) {
+        let vs_selector = await loadHtmlShader(vs_path)
+        let fs_selector = await loadHtmlShader(fs_path)
+        this.mProgram = webglUtils.createProgramFromScripts(gl, [vs_selector, fs_selector]);
         const {mProgram} = this
         this.mPositionLocation = gl.getAttribLocation(mProgram, "position");
         this.mColorLocation = gl.getAttribLocation(mProgram, "color");

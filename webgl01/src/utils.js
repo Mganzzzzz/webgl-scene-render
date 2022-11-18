@@ -106,3 +106,10 @@ export async function loadFileFromUrl(path) {
     const text = await response.text();
     return text
 }
+
+export async function loadHtmlShader(path) {
+    const content = await import(path)
+    const shaderBox = document.querySelector('.shaders')
+    shaderBox.innerHTML = shaderBox.innerHTML + content.default
+    return path.replace('.html', '').split('/').reverse()[0];
+}

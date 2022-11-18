@@ -1,0 +1,24 @@
+<script type="x-shader/x-vertex" id="point_light.vs">
+    precision mediump float;
+
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec2 texcoord;
+    attribute vec4 normal;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+
+    varying vec4 V_Color;
+    varying vec4 V_Position;
+    varying vec4 V_Normal;
+    varying vec4 V_WorldPosition;
+
+    void main() {
+        V_Color=color;
+        V_Normal = normal;
+        V_WorldPosition = M * position;
+        gl_Position=P*V*M*position;
+    }
+
+</script>
