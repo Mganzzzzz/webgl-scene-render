@@ -13,12 +13,14 @@ import niutouTexture from './static/niutou.png'
 import {Camera} from "./Camera";
 import {Particle} from "./Particle";
 import {Sprite} from "./Sprite";
+import {Sprite1} from "./sceneObject/sprite";
+import {Button} from "./sceneObject/button";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
 let texture
 let ground
-let sprite
+
 let model
 let material
 let camera = new Camera()
@@ -26,13 +28,13 @@ let cameraPos = [0, 0, 0]
 let lightPosition = [0.0, 1.0, 1.0, 1.0]
 let pointLightMaterial
 let lightColorMaterial
-let spriteMaterial
+
 let niutouColorMaterial
 let particle
 let particleMaterial
 let particleTexture
 let rootScene = null
-let uiRootScene = null
+let uiRootScene = new SceneNode()
 var fieldOfViewRadians = degToRad(45);
 var projection_matrix = m4.identity()
 var view_matrix = m4.identity()
@@ -148,17 +150,6 @@ async function initNiutouMaterial() {
     niutouColorMaterial.setTexture('U_texture', texture)
 }
 
-async function initSpriteMaterial() {
-    let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
-    spriteMaterial = new Material()
-    spriteMaterial.init(shader);
-    spriteMaterial.mbEnableBlend = true;
-    spriteMaterial.mbEnableDepthTest = false;
-    spriteMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
-    let texture = await createTextureFromUrl(fTexture);
-    spriteMaterial.setTexture("U_texture", texture);
-}
 
 async function initNiutou() {
     model = new Model()
@@ -194,33 +185,26 @@ async function initSphere2() {
     addScene(sceneNode)
 }
 
-async function initSprite() {
-    sprite = new Sprite()
-    sprite.setSize(100, 100)
-    const sceneNode = new SceneNode()
-    sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
-    sceneNode.init(sprite, spriteMaterial)
-    addUiScene(sceneNode)
-}
-
 function bindEvents() {
-    let mouseDown = false
-    let startPoint = null
     gl.canvas.addEventListener('mousemove', (e) => {
-        // console.log('debug e', e)
         camera.onMouseMoveEvent(e)
+        uiRootScene.onEvent(e)
     })
     gl.canvas.addEventListener('mousedown', (e) => {
         camera.onMouseDownEvent(e)
+        uiRootScene.onEvent(e)
     })
     gl.canvas.addEventListener('mouseup', (e) => {
         camera.onMouseUpEvent(e)
+        uiRootScene.onEvent(e)
     })
     window.addEventListener('keydown', (e) => {
         camera.inKeyEvent(e)
+        uiRootScene.onEvent(e)
     })
     window.addEventListener('keyup', (e) => {
         camera.inKeyEvent(e)
+        uiRootScene.onEvent(e)
     })
 }
 
@@ -232,19 +216,22 @@ export async function init() {
     // 设置正射投影
     ui_projection_matrix = m4.orthographic(-gl.canvas.clientWidth / 2, gl.canvas.clientWidth / 2, -gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, 200, -400)
     view_matrix = camera.mViewMatrix;
-
-    await initParticleMaterial()
-    await initLightMaterial()
-    await initPointLightMaterial()
-    await initLightColorMaterial()
-    await initNiutouMaterial()
-    await initSpriteMaterial()
-    await initSphere()
-    await initParticleSystem()
-    await initSphere2()
-    await initNiutou()
-    await initSprite()
-    await initGround()
+    // const sprite = Sprite1.create()
+    // await sprite.init(uiRootScene)
+    const button = Button.create()
+    await button.init(uiRootScene)
+    // await initParticleMaterial()
+    // await initLightMaterial()
+    // await initPointLightMaterial()
+    // await initLightColorMaterial()
+    // await initNiutouMaterial()
+    // await initSpriteMaterial()
+    // await initSphere()
+    // await initParticleSystem()
+    // await initSphere2()
+    // await initNiutou()
+    // await initSprite()
+    // await initGround()
 }
 
 export async function render(deltaTime) {
