@@ -1,3 +1,9 @@
+const MouseClickType = {
+    left: 0,
+    middle: 1,
+    right: 2,
+}
+
 export class Camera {
     constructor() {
         this.speed = 30
@@ -5,8 +11,8 @@ export class Camera {
             clientX: 0,
             clientY: 0,
         }
-        this.mPosition = ([0, 0, 10])
-        this.mViewCenter = ([0, 0, -1])
+        this.mPosition = [0, 0, 10]
+        this.mViewCenter = [0, 0, -1]
         this.mUp = ([0, 1, 0])
         // this.load()
         this.mbForward = false
@@ -14,6 +20,7 @@ export class Camera {
         this.mbLeft = false
         this.mbRight = false
         this.isRotateView = false
+        this.isRotatePos = false
 
         this.mViewMatrix = m4.lookAt(this.mPosition, this.mViewCenter, this.mUp);
     }
@@ -85,6 +92,12 @@ export class Camera {
         this.rotateView(angle, x, y, z);
     }
 
+    moveCameraPos() {
+        let x = 0
+        let y = 0
+        this.mPosition = [x, y, 7];
+    }
+
     rotateView(angle, x, y, z) {
         // 获取视线
         let forwardDirection = m4.subtractVectors(this.mViewCenter, this.mPosition)
@@ -103,20 +116,47 @@ export class Camera {
     }
 
     onMouseDownEvent(e) {
+        if (e.button === MouseClickType.right) {
+            this.onMouseRightDown(e)
+        } else if (e.button === MouseClickType.middle) {
+            this.onMouseMiddleDown(e)
+        }
+    }
+
+    onMouseUpEvent(e) {
+        if (e.button === MouseClickType.right) {
+            this.onMouseRightUp(e)
+        } else if (e.button === MouseClickType.middle) {
+            this.onMouseMiddleUp(e)
+        }
+    }
+
+    onMouseRightDown(e) {
         this.originPoint.clientX = e.clientX
         this.originPoint.clientY = e.clientY
         this.isRotateView = true
     }
 
-    onMouseUpEvent(e) {
+    onMouseRightUp(e) {
         this.originPoint.clientX = e.clientX
         this.originPoint.clientY = e.clientY
         this.isRotateView = false
     }
 
+    onMouseMiddleDown(e) {
+        this.originPoint.clientX = e.clientX
+        this.originPoint.clientY = e.clientY
+        this.isRotatePos = true
+    }
+
+    onMouseMiddleUp(e) {
+        this.originPoint.clientX = e.clientX
+        this.originPoint.clientY = e.clientY
+        this.isRotatePos = false
+    }
+
     onMouseMoveEvent(e) {
         if (this.isRotateView) {
-
             let deltaX = e.clientX - this.originPoint.clientX
             let deltaY = e.clientY - this.originPoint.clientY
             let angleRight = deltaY / 1000
@@ -125,6 +165,15 @@ export class Camera {
             this.pitch(angleRight)
             this.originPoint.clientX = e.clientX
             this.originPoint.clientY = e.clientY
+        } else if (this.isRotatePos) {
+            let deltaX = e.clientX - this.originPoint.clientX
+            let deltaY = e.clientY - this.originPoint.clientY
+            let angleRight = deltaY / 10000
+            let angleUp = deltaX / 10000
+            const m1 = m4.xRotation(-angleRight,)
+            const m2 = m4.yRotation(-angleUp,)
+            this.mPosition = m4.transformPoint(m1, this.mPosition)
+            this.mPosition = m4.transformPoint(m2, this.mPosition)
         }
     }
 
