@@ -150,6 +150,17 @@ async function initNiutouMaterial() {
     niutouColorMaterial.setTexture('U_texture', texture)
 }
 
+async function initSpriteMaterial() {
+    let shader = new Shader()
+    await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
+    let spriteMaterial = new Material()
+    spriteMaterial.init(shader);
+    spriteMaterial.mbEnableBlend = true;
+    spriteMaterial.mbEnableDepthTest = false;
+    spriteMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
+    let texture = await createTextureFromUrl(fTexture);
+    spriteMaterial.setTexture("U_texture", texture);
+}
 
 async function initNiutou() {
     model = new Model()
@@ -183,6 +194,15 @@ async function initSphere2() {
     sceneNode.init(model, pointLightMaterial)
     sphereNode = sceneNode
     addScene(sceneNode)
+}
+
+async function initSprite() {
+    let sprite = new Sprite()
+    sprite.setSize(100, 100)
+    const sceneNode = new SceneNode()
+    sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
+    sceneNode.init(sprite, spriteMaterial)
+    addUiScene(sceneNode)
 }
 
 function bindEvents() {
@@ -231,7 +251,7 @@ export async function init() {
     // await initSphere2()
     // await initNiutou()
     // await initSprite()
-    await initGround()
+    // await initGround()
 }
 
 export async function render(deltaTime) {

@@ -1,7 +1,7 @@
 import {SceneElement} from "./object";
 import {Shader} from "../Shader";
 import {Material} from "../Material";
-import {createTextureFromUrl} from "../utils";
+import {createTextTexture, createTextureFromUrl} from "../utils";
 import fTexture from "../static/f-texture.png";
 import {Sprite} from "../Sprite";
 import {SceneNode} from "../SceneNode";
@@ -14,14 +14,17 @@ export class Button extends SceneElement {
         this.w = 50
         this.h = 30
         this.mousedown = false
+        this.textNode = null
     }
 
     async init(sceneRoot) {
         this.uiRootScene = sceneRoot
         await this.initSpriteMaterial()
         await this.initSprite()
+        await this.initText()
         this.bindEvent()
         this.uiRootScene.add(this.sceneNode)
+        this.uiRootScene.add(this.textNode)
     }
 
     isInRect(e) {
@@ -62,5 +65,24 @@ export class Button extends SceneElement {
         this.sceneNode = new SceneNode()
         this.sceneNode.mModelMatrix = m4.translate(this.sceneNode.mModelMatrix, this.x, this.y, 0)
         this.sceneNode.init(this.mGeometry, this.mMaterial)
+    }
+
+    async initText() {
+        let shader = new Shader()
+        await shader.initStandardShader("/src/shaders/text.vs.html", "/src/shaders/text.fs.html")
+        let textMaterial = new Material()
+        textMaterial.init(shader);
+        // textMaterial.mbEnableBlend = true;
+        // textMaterial.mbEnableDepthTest = false;
+        // textMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
+        let texture = await createTextTexture('hello', 100, 50)
+        textMaterial.setTexture("U_texture", texture);
+
+        this.mText = new Sprite()
+        this.mText.setSize(this.w, this.h)
+        let sceneNode = new SceneNode()
+        sceneNode.mModelMatrix = m4.translate(sceneNode.mModelMatrix, this.x, this.y, 0)
+        sceneNode.init(this.mText, textMaterial)
+        this.textNode = sceneNode
     }
 }
