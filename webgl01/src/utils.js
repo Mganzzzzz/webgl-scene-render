@@ -88,14 +88,14 @@ export async function createProcedureTexture(size) {
     })
 }
 
-export async function createTextureFromUrl(path) {
+export async function createTextureFromUrl(path, flip) {
     var image = new Image();
 
     image.src = path;
     return new Promise((resolve, reject) => {
         image.addEventListener('load', function () {
             // Now that the image has loaded make copy it to the texture.
-            const texture = createTexture2DFromImg(image)
+            const texture = createTexture2DFromImg(image, flip)
             resolve(texture)
         });
     })
@@ -133,11 +133,12 @@ export function makeTextCanvas(text, width, height) {
     var textCtx = canvasElement.getContext("2d")
     textCtx.canvas.width = width;
     textCtx.canvas.height = height;
-    textCtx.font = "20px monospace";
+    textCtx.font = "20px serif";
     textCtx.textAlign = "center";
     textCtx.textBaseline = "middle";
     textCtx.fillStyle = "black";
     textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
     textCtx.fillText(text, width / 2, height / 2);
-    return textCtx.canvas;
+    textCtx.strokeText(text, width / 2, height / 2);
+    return canvasElement
 }

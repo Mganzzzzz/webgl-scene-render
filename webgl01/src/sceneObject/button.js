@@ -4,7 +4,7 @@ import {Material} from "../Material";
 import {createTextTexture, createTextureFromUrl} from "../utils";
 import fTexture from "../static/f-texture.png";
 import {Sprite} from "../Sprite";
-            import {SceneNode} from "../SceneNode";
+import {SceneNode} from "../SceneNode";
 
 export class Button extends SceneElement {
     constructor() {
@@ -37,6 +37,27 @@ export class Button extends SceneElement {
     bindEvent() {
         this.mGeometry.addEventListener('mousedown', (e) => {
             this.mousedown = true
+            if (this.isInRect(e)) {
+                this.mGeometry.setColor(0.7, 0.7, 0.7);
+            }
+        })
+
+        this.mGeometry.addEventListener('mouseover', (e) => {
+            if (this.isInRect(e)) {
+                console.log('debug 111', 111)
+                // this.mGeometry.setColor(0.7, 0.7, 0.7);
+            }
+        })
+
+        this.mGeometry.addEventListener('mouseout', (e) => {
+            // console.log('debug 123', 123)
+            // if (this.isInRect(e)) {
+            //     this.mGeometry.setColor(0.7, 0.7, 0.7);
+            // }
+        })
+
+        this.mGeometry.addEventListener('mouseover', (e) => {
+            console.log('debug 123', 123)
             if (this.isInRect(e)) {
                 this.mGeometry.setColor(0.7, 0.7, 0.7);
             }
@@ -75,13 +96,14 @@ export class Button extends SceneElement {
         textMaterial.mSRCBlendFunc = gl.ONE
         textMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA
         textMaterial.init(shader);
-        let texture = await createTextTexture('test', 100, 50)
+        textMaterial.depthMask = false;
+        let texture = await createTextTexture('hello', 100, 50)
         textMaterial.setTexture("U_texture", texture);
 
         this.mText = new Sprite()
         this.mText.setSize(this.w, this.h)
         let sceneNode = new SceneNode()
-        sceneNode.mModelMatrix = m4.translate(sceneNode.mModelMatrix, this.x, this.y, 0)
+        // m4.xRotation(0, sceneNode.mModelMatrix)
         sceneNode.init(this.mText, textMaterial)
         this.textNode = sceneNode
     }

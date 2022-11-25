@@ -8,10 +8,10 @@ export class Sprite extends Geometry {
         this.vbo = null
         this.mVertexBuffer = new VertexBuffer()
         this.mVertexBuffer.setSize(4);
-        this.mVertexBuffer.setTexcoord(0, 0.0, 0.0);
-        this.mVertexBuffer.setTexcoord(1, 1.0, 0.0);
-        this.mVertexBuffer.setTexcoord(2, 0.0, 1.0);
-        this.mVertexBuffer.setTexcoord(3, 1.0, 1.0);
+        this.mVertexBuffer.setTexcoord(0, 0.0, 1.0);
+        this.mVertexBuffer.setTexcoord(1, 1.0, 1.0);
+        this.mVertexBuffer.setTexcoord(2, 0.0, 0.0);
+        this.mVertexBuffer.setTexcoord(3, 1.0, 0.0);
 
         this.mVertexBuffer.setColor(0, 1.0, 1.0, 1.0);
         this.mVertexBuffer.setColor(1, 1.0, 1.0, 1.0);

@@ -29,6 +29,7 @@ export class Material {
         this.mbEnableBlend = false;
         this.mSRCBlendFunc = gl.SRC_ALPHA;
         this.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
+        this.depthMask = true
 
         this.shader = null
         this.vec4PropertyMap = {}
@@ -117,6 +118,8 @@ export class Material {
         } else {
             gl.disable(gl.BLEND);
         }
+
+        gl.depthMask(this.depthMask)
 
         this.shader.active()
         this.shader.setMVP(this.mat4PropertyMap['M'].mat4, v, p)

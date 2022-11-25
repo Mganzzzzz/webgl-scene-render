@@ -33,6 +33,7 @@ let niutouColorMaterial
 let particle
 let particleMaterial
 let particleTexture
+let spriteMaterial
 let rootScene = null
 let uiRootScene = new SceneNode()
 var fieldOfViewRadians = degToRad(45);
@@ -153,12 +154,12 @@ async function initNiutouMaterial() {
 async function initSpriteMaterial() {
     let shader = new Shader()
     await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
-    let spriteMaterial = new Material()
+    spriteMaterial = new Material()
     spriteMaterial.init(shader);
     spriteMaterial.mbEnableBlend = true;
     spriteMaterial.mbEnableDepthTest = false;
     spriteMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
-    let texture = await createTextureFromUrl(fTexture);
+    let texture = await createTextureFromUrl(fTexture, false);
     spriteMaterial.setTexture("U_texture", texture);
 }
 
@@ -200,8 +201,9 @@ async function initSprite() {
     let sprite = new Sprite()
     sprite.setSize(100, 100)
     const sceneNode = new SceneNode()
-    sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
     sceneNode.init(sprite, spriteMaterial)
+    sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
+    console.log('debug spriteMaterial', spriteMaterial)
     addUiScene(sceneNode)
 }
 
@@ -218,6 +220,14 @@ function bindEvents() {
         camera.onMouseUpEvent(e)
         uiRootScene.onEvent(e)
     })
+    gl.canvas.addEventListener('mouseover', (e) => {
+        uiRootScene.onEvent(e)
+    })
+
+    gl.canvas.addEventListener('mouseout', (e) => {
+        uiRootScene.onEvent(e)
+    })
+
     window.addEventListener('keydown', (e) => {
         camera.inKeyEvent(e)
         uiRootScene.onEvent(e)
@@ -240,17 +250,17 @@ export async function init() {
     // await sprite.init(uiRootScene)
     const button = Button.create()
     await button.init(uiRootScene)
-    await initParticleMaterial()
-    await initLightMaterial()
-    await initPointLightMaterial()
+    // await initParticleMaterial()
+    // await initLightMaterial()
+    // await initPointLightMaterial()
     // await initLightColorMaterial()
-    // await initNiutouMaterial()
-    // await initSpriteMaterial()
+    await initNiutouMaterial()
+    await initSpriteMaterial()
     // await initSphere()
     // await initParticleSystem()
     // await initSphere2()
-    // await initNiutou()
-    // await initSprite()
+    await initNiutou()
+    await initSprite()
     // await initGround()
 }
 
