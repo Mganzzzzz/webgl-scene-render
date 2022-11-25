@@ -247,7 +247,7 @@ export async function init() {
     // await initNiutouMaterial()
     // await initSpriteMaterial()
     // await initSphere()
-    await initParticleSystem()
+    // await initParticleSystem()
     // await initSphere2()
     // await initNiutou()
     // await initSprite()
@@ -257,7 +257,7 @@ export async function init() {
 export async function render(deltaTime) {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
-    gl.clearColor(0.0, 0.0, 0.0, 0.0)
+    gl.clearColor(0.1, 0.4, 0.7, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     camera.update(deltaTime)
     view_matrix = camera.mViewMatrix;

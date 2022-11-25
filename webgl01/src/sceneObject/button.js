@@ -4,7 +4,7 @@ import {Material} from "../Material";
 import {createTextTexture, createTextureFromUrl} from "../utils";
 import fTexture from "../static/f-texture.png";
 import {Sprite} from "../Sprite";
-import {SceneNode} from "../SceneNode";
+            import {SceneNode} from "../SceneNode";
 
 export class Button extends SceneElement {
     constructor() {
@@ -71,11 +71,11 @@ export class Button extends SceneElement {
         let shader = new Shader()
         await shader.initStandardShader("/src/shaders/text.vs.html", "/src/shaders/text.fs.html")
         let textMaterial = new Material()
+        textMaterial.mbEnableBlend = true
+        textMaterial.mSRCBlendFunc = gl.ONE
+        textMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA
         textMaterial.init(shader);
-        // textMaterial.mbEnableBlend = true;
-        // textMaterial.mbEnableDepthTest = false;
-        // textMaterial.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
-        let texture = await createTextTexture('hello', 100, 50)
+        let texture = await createTextTexture('test', 100, 50)
         textMaterial.setTexture("U_texture", texture);
 
         this.mText = new Sprite()
