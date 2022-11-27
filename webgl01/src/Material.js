@@ -30,11 +30,13 @@ export class Material {
         this.mSRCBlendFunc = gl.SRC_ALPHA;
         this.mDSTBlendFunc = gl.ONE_MINUS_SRC_ALPHA;
         this.depthMask = true
+        this.cullFace = true
 
         this.shader = null
         this.vec4PropertyMap = {}
         this.mat4PropertyMap = {}
         this.texturePropertyMap = {}
+        this.textureCubePropertyMap = {}
     }
 
     init(shader) {
@@ -45,11 +47,11 @@ export class Material {
     setVec4(name, vec4) {
 
         let prop = null
-        if (this.vec4PropertyMap[name]) {
+        if(this.vec4PropertyMap[name]) {
             prop = this.vec4PropertyMap[name]
         } else {
             const location = gl.getUniformLocation(this.shader.mProgram, name)
-            if (location instanceof WebGLUniformLocation) {
+            if(location instanceof WebGLUniformLocation) {
                 prop = new Vec4Property()
                 prop.location = location
                 prop.name = name
@@ -57,36 +59,36 @@ export class Material {
             }
         }
 
-        if (prop) {
+        if(prop) {
             prop.vec4 = vec4
         }
     }
 
     setMat4(name, mat4) {
         let prop = null
-        if (this.mat4PropertyMap[name]) {
+        if(this.mat4PropertyMap[name]) {
             prop = this.mat4PropertyMap[name]
         } else {
             const location = gl.getUniformLocation(this.shader.mProgram, name)
-            if (location instanceof WebGLUniformLocation) {
+            if(location instanceof WebGLUniformLocation) {
                 prop = new Mat4Property()
                 prop.location = location
                 prop.name = name
                 this.mat4PropertyMap[name] = prop
             }
         }
-        if (prop) {
+        if(prop) {
             prop.mat4 = mat4
         }
     }
 
     setTexture(name, texture) {
         let prop = null
-        if (this.texturePropertyMap[name]) {
+        if(this.texturePropertyMap[name]) {
             prop = this.texturePropertyMap[name]
         } else {
             const location = gl.getUniformLocation(this.shader.mProgram, name)
-            if (location instanceof WebGLUniformLocation) {
+            if(location instanceof WebGLUniformLocation) {
                 prop = new TextureProperty()
                 prop.location = location
                 prop.name = name
@@ -94,13 +96,33 @@ export class Material {
             }
         }
 
-        if (prop) {
+        if(prop) {
             prop.texture = texture
         }
     }
 
+    setTextureCube(name, texture) {
+        let prop = null
+        if(this.textureCubePropertyMap[name]) {
+            prop = this.textureCubePropertyMap[name]
+        } else {
+            const location = gl.getUniformLocation(this.shader.mProgram, name)
+            if(location instanceof WebGLUniformLocation) {
+                prop = new TextureProperty()
+                prop.location = location
+                prop.name = name
+                this.textureCubePropertyMap[name] = prop
+            }
+        }
+
+        if(prop) {
+            prop.texture = texture
+        }
+    }
+
+
     active(v, p) {
-        if (this.mbEnableDepthTest) {
+        if(this.mbEnableDepthTest) {
             gl.enable(gl.DEPTH_TEST);
         } else {
             gl.disable(gl.DEPTH_TEST);
@@ -112,11 +134,16 @@ export class Material {
         // }
 
 
-        if (this.mbEnableBlend) {
+        if(this.mbEnableBlend) {
             gl.enable(gl.BLEND);
             gl.blendFunc(this.mSRCBlendFunc, this.mDSTBlendFunc);
         } else {
             gl.disable(gl.BLEND);
+        }
+        if(this.cullFace) {
+            gl.enable(gl.CULL_FACE)
+        } else {
+            gl.disable(gl.CULL_FACE)
         }
 
         gl.depthMask(this.depthMask)
@@ -129,13 +156,21 @@ export class Material {
         })
 
         Object.values(this.vec4PropertyMap).forEach((prop) => {
-            if (prop.location) {
+            if(prop.location) {
                 gl.uniform4fv(prop.location, prop.vec4)
             }
         })
-        Object.values(this.texturePropertyMap).forEach((item, mSlotIndex) => {
+        let mSlotIndex = 0;
+        Object.values(this.texturePropertyMap).forEach((item) => {
             gl.activeTexture(gl.TEXTURE0 + mSlotIndex);
             gl.bindTexture(gl.TEXTURE_2D, item.texture);
+            /// 通过采样器传输纹理
+            gl.uniform1i(item.location, mSlotIndex);
+        })
+
+        Object.values(this.textureCubePropertyMap).forEach((item) => {
+            gl.activeTexture(gl.TEXTURE0 + mSlotIndex);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, item.texture);
             /// 通过采样器传输纹理
             gl.uniform1i(item.location, mSlotIndex);
         })

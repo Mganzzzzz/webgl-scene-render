@@ -1,0 +1,17 @@
+<script type="x-shader/x-vertex" id="skybox.vs">
+    precision mediump float;
+    attribute vec4 position;
+    attribute vec4 color;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+
+    varying vec3 V_Texcoord;
+
+    void main(){
+        V_Texcoord = position.xyz;
+        gl_Position=P*V*M*position;
+    }
+
+
+</script>

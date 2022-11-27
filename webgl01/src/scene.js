@@ -1,5 +1,5 @@
 import {degToRad} from "./math/math_utils";
-import {createBufferObject, createProcedureTexture, createTextureFromUrl} from "./utils";
+import {createBufferObject, createProcedureTexture, createTextureCubeFromUrl, createTextureFromUrl} from "./utils";
 import testImg from './static/test.png'
 import {Shader} from "./Shader";
 import {VertexBuffer} from "./VertexBuffer";
@@ -42,7 +42,7 @@ var model_matrix = m4.identity()
 let sphereNode = null
 
 function addScene(sceneNode) {
-    if (!rootScene) {
+    if(!rootScene) {
         rootScene = sceneNode
     } else {
         rootScene.add(sceneNode)
@@ -50,7 +50,7 @@ function addScene(sceneNode) {
 }
 
 function addUiScene(sceneNode) {
-    if (!uiRootScene) {
+    if(!uiRootScene) {
         uiRootScene = sceneNode
     } else {
         uiRootScene.add(sceneNode)
@@ -185,19 +185,19 @@ async function initEarth() {
     sphereNode = sceneNode
     addScene(sceneNode)
     earthModel.addEventListener(MouseEventType.mousedown, (e) => {
-        if (e.button === MouseClickType.left) {
+        if(e.button === MouseClickType.left) {
             earthModel.leftMouseDown = true
             earthModel.startPoint = e
         }
     })
     earthModel.addEventListener(MouseEventType.mouseup, (e) => {
-        if (e.button === MouseClickType.left) {
+        if(e.button === MouseClickType.left) {
             earthModel.leftMouseDown = false
         }
 
     })
     earthModel.addEventListener(MouseEventType.mousemove, (e) => {
-        if (earthModel.leftMouseDown) {
+        if(earthModel.leftMouseDown) {
             const {clientX, clientY} = e
             const {clientX: startX, clientY: startY} = earthModel.startPoint
             let x = clientX - startX
@@ -218,6 +218,25 @@ async function initSprite() {
     sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
     addUiScene(sceneNode)
 }
+
+async function initSkybox() {
+
+    const texture = await createTextureCubeFromUrl("/src/static/front.bmp", "/src/static/back.bmp",
+        "/src/static/left.bmp", "/src/static/right.bmp", "/src/static/bottom.bmp", "/src/static/top.bmp")
+    let shader = new Shader()
+    await shader.initStandardShader("/src/shaders/skybox.vs.html", "/src/shaders/skybox.fs.html")
+    let skyboxMaterial = new Material()
+    skyboxMaterial.init(shader)
+    skyboxMaterial.setTextureCube('U_texture', texture)
+    skyboxMaterial.cullFace = false
+    skyboxMaterial.mbEnableDepthTest = false
+    let model = new Model()
+    const sceneNode = new SceneNode()
+    await model.init('/src/static/Cube.obj', sceneNode)
+    sceneNode.init(model, skyboxMaterial)
+    addScene(sceneNode)
+}
+
 
 function bindEvents() {
     gl.canvas.addEventListener('mousemove', (e) => {
@@ -259,6 +278,7 @@ function bindEvents() {
     })
 }
 
+
 export async function init() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     initUI()
@@ -280,6 +300,7 @@ export async function init() {
     await initEarth()
     await initNiutou()
     await initSprite()
+    // await initSkybox()
     await initGround()
 }
 
@@ -292,7 +313,7 @@ function initUI() {
     cameraLock.addEventListener('change', (e) => {
         console.log('debug e', e.target.checked)
         const checked = e.target.checked
-        if (checked) {
+        if(checked) {
             camera.disable()
         } else {
             camera.enable()

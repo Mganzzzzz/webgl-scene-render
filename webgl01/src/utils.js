@@ -32,7 +32,7 @@ function flipImage(inputImage) {
 }
 
 export function createTexture2DFromImg(image, flip = true) {
-    if (flip) {
+    if(flip) {
         image = flipImage(image)
     }
     var texture = gl.createTexture();
@@ -50,6 +50,26 @@ export function createTexture2DFromImg(image, flip = true) {
     return texture
 }
 
+
+export function createTextureCubeFromImgs(front, back, left, right, top, bottom) {
+    let texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, front);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, back);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, left);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, right);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bottom);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, top);
+
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+    return texture;
+}
+
 export async function createProcedureTexture(size) {
     let halfSize = size / 2;
     let centerX = halfSize;
@@ -60,8 +80,8 @@ export async function createProcedureTexture(size) {
     const ctx = canvasElement.getContext('2d');
     const imageBuffer = new Uint8ClampedArray(size * size * 4)
     let maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
-    for (let i = 0; i < size; ++i) {
-        for (let j = 0; j < size; ++j) {
+    for(let i = 0; i < size; ++i) {
+        for(let j = 0; j < size; ++j) {
             let currentPixelOffset = (i + j * size) * 4;
             imageBuffer[currentPixelOffset] = 255;
             imageBuffer[currentPixelOffset + 1] = 255;
@@ -93,11 +113,29 @@ export async function createTextureFromUrl(path, flip) {
 
     image.src = path;
     return new Promise((resolve, reject) => {
-        image.addEventListener('load', function () {
+        image.addEventListener('load', function() {
             // Now that the image has loaded make copy it to the texture.
             const texture = createTexture2DFromImg(image, flip)
             resolve(texture)
         });
+    })
+}
+
+export async function createTextureCubeFromUrl(front, back, left, right, top, bottom) {
+
+    const ps = [front, back, left, right, top, bottom].map(path => {
+        var image = new Image();
+        image.src = path;
+        return new Promise((resolve, reject) => {
+            image.addEventListener('load', function() {
+                // Now that the image has loaded make copy it to the texture.
+                resolve(image)
+            });
+        })
+    })
+    return Promise.all(ps).then(r => {
+        console.log('debug r', r)
+        return createTextureCubeFromImgs(...r)
     })
 }
 

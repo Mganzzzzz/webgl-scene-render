@@ -1,0 +1,11 @@
+<script type="x-shader/x-fragment" id="skybox.fs">
+    precision mediump float;
+    varying vec3 V_Texcoord;
+    uniform samplerCube U_texture;
+
+    void main(){
+        // 纹理坐标单位化一下 变成一个方向向量
+        gl_FragColor= textureCube(U_texture, normalize(V_Texcoord));
+    }
+
+</script>
