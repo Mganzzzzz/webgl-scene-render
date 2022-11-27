@@ -15,6 +15,7 @@ import {Particle} from "./Particle";
 import {Sprite} from "./Sprite";
 import {Sprite1} from "./sceneObject/sprite";
 import {Button} from "./sceneObject/button";
+import {MouseClickType, MouseEventType} from "./constant";
 
 const width = gl.canvas.clientWidth
 const height = gl.canvas.clientHeight
@@ -25,14 +26,10 @@ let model
 let material
 let camera = new Camera()
 let cameraPos = [0, 0, 0]
-let lightPosition = [0.0, 1.0, 1.0, 1.0]
-let pointLightMaterial
-let lightColorMaterial
-
-let niutouColorMaterial
+let lightPosition = [0.0, 3.0, 0.0, 1.0]
+let pointLightMaterial, niutouColorMaterial, earthColorMaterial
 let particle
 let particleMaterial
-let particleTexture
 let spriteMaterial
 let rootScene = null
 let uiRootScene = new SceneNode()
@@ -60,21 +57,6 @@ function addUiScene(sceneNode) {
     }
 }
 
-
-async function initLightColorMaterial() {
-    const texture = await createTextureFromUrl(testTexture);
-    let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/light_color.vs.html", "/src/shaders/light_color.fs.html")
-    lightColorMaterial = new Material()
-    lightColorMaterial.init(shader)
-    lightColorMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
-    lightColorMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
-    lightColorMaterial.setVec4('U_DiffuseLight', [0.8, 0.8, 0.8, 1.0])
-    lightColorMaterial.setVec4('U_DiffuseMaterial', [0.4, 0.4, 0.4, 1.0])
-    lightColorMaterial.setVec4('U_LightPos', [0.0, 1.0, 0.0, 0.0])
-    // lightColorMaterial.setTexture('U_texture', texture)
-}
-
 async function initGround() {
     ground = new Ground()
     await ground.init()
@@ -84,17 +66,6 @@ async function initGround() {
     addScene(sceneNode)
 }
 
-async function initLightMaterial() {
-    let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/light.vs.html", "/src/shaders/light.fs.html")
-    material = new Material()
-    material.init(shader)
-    material.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
-    material.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
-    material.setVec4('U_DiffuseLightColor', [0.1, 0.4, 0.7, 1.0])
-    material.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
-    material.setVec4('U_LightPos', lightPosition)
-}
 
 async function initPointLightMaterial() {
     let shader = new Shader()
@@ -151,6 +122,23 @@ async function initNiutouMaterial() {
     niutouColorMaterial.setTexture('U_texture', texture)
 }
 
+async function initEarthMaterial() {
+    let shader = new Shader()
+    let texture = await createTextureFromUrl('/src/static/earth.bmp')
+
+    await shader.initStandardShader("/src/shaders/point_light_texture.vs.html", "/src/shaders/point_light_texture.fs.html")
+    earthColorMaterial = new Material()
+    earthColorMaterial.init(shader)
+
+    earthColorMaterial.init(shader)
+    earthColorMaterial.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
+    earthColorMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
+    earthColorMaterial.setVec4('U_DiffuseLightColor', [0.9, 0.9, 0.9, 1.0])
+    earthColorMaterial.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    earthColorMaterial.setVec4('U_LightPos', lightPosition)
+    earthColorMaterial.setTexture('U_texture', texture)
+}
+
 async function initSpriteMaterial() {
     let shader = new Shader()
     await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
@@ -176,25 +164,50 @@ async function initNiutou() {
     addScene(sceneNode)
 }
 
+
 async function initSphere() {
     model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Cube.obj', sceneNode)
-    sceneNode.mModelMatrix = m4.translation(0, 0, -10)
+    await model.init('/src/static/Sphere.obj', sceneNode)
+    sceneNode.mModelMatrix = m4.translation(-3.5, -1, -6)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
-    sceneNode.init(model, material)
+    sceneNode.init(model, pointLightMaterial)
     addScene(sceneNode)
 }
 
-async function initSphere2() {
-    model = new Model()
+async function initEarth() {
+    let earthModel = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Cube.obj', sceneNode)
+    await earthModel.init('/src/static/Sphere.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(-1.5, -1, -6)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
-    sceneNode.init(model, pointLightMaterial)
+    sceneNode.init(earthModel, earthColorMaterial)
     sphereNode = sceneNode
     addScene(sceneNode)
+    earthModel.addEventListener(MouseEventType.mousedown, (e) => {
+        if (e.button === MouseClickType.left) {
+            earthModel.leftMouseDown = true
+            earthModel.startPoint = e
+        }
+    })
+    earthModel.addEventListener(MouseEventType.mouseup, (e) => {
+        if (e.button === MouseClickType.left) {
+            earthModel.leftMouseDown = false
+        }
+
+    })
+    earthModel.addEventListener(MouseEventType.mousemove, (e) => {
+        if (earthModel.leftMouseDown) {
+            const {clientX, clientY} = e
+            const {clientX: startX, clientY: startY} = earthModel.startPoint
+            let x = clientX - startX
+            let y = clientY - startY
+            let xAngle = x / gl.canvas.width * 10
+            let yAngle = y / gl.canvas.height * 10
+            m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(xAngle)), sceneNode.mModelMatrix)
+            m4.multiply(sceneNode.mModelMatrix, m4.xRotation(degToRad(yAngle)), sceneNode.mModelMatrix)
+        }
+    })
 }
 
 async function initSprite() {
@@ -203,7 +216,6 @@ async function initSprite() {
     const sceneNode = new SceneNode()
     sceneNode.init(sprite, spriteMaterial)
     sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
-    console.log('debug spriteMaterial', spriteMaterial)
     addUiScene(sceneNode)
 }
 
@@ -211,63 +223,87 @@ function bindEvents() {
     gl.canvas.addEventListener('mousemove', (e) => {
         camera.onMouseMoveEvent(e)
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
+
+
     })
     gl.canvas.addEventListener('mousedown', (e) => {
         camera.onMouseDownEvent(e)
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
     gl.canvas.addEventListener('mouseup', (e) => {
         camera.onMouseUpEvent(e)
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
     gl.canvas.addEventListener('mouseover', (e) => {
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
 
     gl.canvas.addEventListener('mouseout', (e) => {
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
 
     window.addEventListener('keydown', (e) => {
         camera.inKeyEvent(e)
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
     window.addEventListener('keyup', (e) => {
         camera.inKeyEvent(e)
         uiRootScene.onEvent(e)
+        rootScene.onEvent(e)
     })
 }
 
 export async function init() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+    initUI()
     bindEvents()
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     projection_matrix = m4.perspective(fieldOfViewRadians, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 4000);
     // 设置正射投影
     ui_projection_matrix = m4.orthographic(-gl.canvas.clientWidth / 2, gl.canvas.clientWidth / 2, -gl.canvas.clientHeight / 2, gl.canvas.clientHeight / 2, 200, -400)
     view_matrix = camera.mViewMatrix;
-    // const sprite = Sprite1.create()
-    // await sprite.init(uiRootScene)
-    const button = Button.create()
+    const button = Button.create(100, 20, 50, 30)
     await button.init(uiRootScene)
-    // await initParticleMaterial()
-    // await initLightMaterial()
-    // await initPointLightMaterial()
-    // await initLightColorMaterial()
+    await initParticleMaterial()
+    await initEarthMaterial()
+    await initPointLightMaterial()
     await initNiutouMaterial()
     await initSpriteMaterial()
-    // await initSphere()
-    // await initParticleSystem()
-    // await initSphere2()
+    await initSphere()
+    await initParticleSystem()
+    await initEarth()
     await initNiutou()
     await initSprite()
-    // await initGround()
+    await initGround()
+}
+
+const $ = document.querySelector.bind(document)
+
+function initUI() {
+    const cameraLock = $('.camera-lock')
+    cameraLock.checked = true
+    camera.disable()
+    cameraLock.addEventListener('change', (e) => {
+        console.log('debug e', e.target.checked)
+        const checked = e.target.checked
+        if (checked) {
+            camera.disable()
+        } else {
+            camera.enable()
+        }
+    })
 }
 
 export async function render(deltaTime) {
     gl.enable(gl.CULL_FACE)
     gl.enable(gl.DEPTH_TEST)
-    gl.clearColor(0.1, 0.4, 0.7, 1.0)
+    gl.clearColor(0.1, 0.1, 0.1, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     camera.update(deltaTime)
     view_matrix = camera.mViewMatrix;

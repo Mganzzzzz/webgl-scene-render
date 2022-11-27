@@ -11,8 +11,8 @@ export class SceneElement {
 
 
 
-    static create() {
-        return new this()
+    static create(...args) {
+        return new this(...args)
     }
 
 

@@ -93,6 +93,7 @@ export class Shader {
 
     unActive() {
         gl.useProgram(null)
+        gl.bindTexture(gl.TEXTURE_2D, null);
     }
 
 }

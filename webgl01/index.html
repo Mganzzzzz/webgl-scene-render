@@ -26,8 +26,15 @@
 <script src="webgl-utils.js"></script>
 <script src="m4.js"></script>
 <canvas class="" id="c" width="800" height="600"></canvas>
+
 <div id="wrap" style="display:none;">
 </div>
+
+<div>
+    <input type="checkbox" class="camera-lock" >像机锁定
+
+</div>
+
 <script>
     window.canvas = document.querySelector("#c");
     window.gl = canvas.getContext("webgl");

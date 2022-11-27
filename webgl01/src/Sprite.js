@@ -33,10 +33,10 @@ export class Sprite extends Geometry {
     }
 
     setSize(width, height) {
-        this.mVertexBuffer.setPosition(0, -width / 2.0, -height / 2.0, -20);
-        this.mVertexBuffer.setPosition(1, width / 2.0, -height / 2.0, -20);
-        this.mVertexBuffer.setPosition(2, -width / 2.0, height / 2.0, -20);
-        this.mVertexBuffer.setPosition(3, width / 2.0, height / 2.0, -20);
+        this.mVertexBuffer.setPosition(0, -width / 2.0, -height / 2.0, -0.2);
+        this.mVertexBuffer.setPosition(1, width / 2.0, -height / 2.0, -0.2);
+        this.mVertexBuffer.setPosition(2, -width / 2.0, height / 2.0, -0.2);
+        this.mVertexBuffer.setPosition(3, width / 2.0, height / 2.0, -0.2);
         const bufferData = this.mVertexBuffer.getData()
         updateBufferObject(this.vbo, gl.ARRAY_BUFFER, 0, bufferData);
     }

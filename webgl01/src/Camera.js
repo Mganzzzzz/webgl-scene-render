@@ -1,12 +1,10 @@
-const MouseClickType = {
-    left: 0,
-    middle: 1,
-    right: 2,
-}
+import {MouseClickType} from "./constant";
+
 
 export class Camera {
     constructor() {
-        this.speed = 30
+        this.speed = 10
+        this.disabled = false
         this.originPoint = {
             clientX: 0,
             clientY: 0,
@@ -26,6 +24,11 @@ export class Camera {
     }
 
     update(deltatime) {
+
+        if(this.disabled) {
+            return
+        }
+
         let speed = this.speed
         // 计算出视线的向量
         let forwardDirection = m4.subtractVectors(this.mViewCenter, this.mPosition)
@@ -194,5 +197,12 @@ export class Camera {
         if (key === 'd') {
             this.mbRight = t
         }
+    }
+
+    disable() {
+        this.disabled = true
+    }
+    enable() {
+        this.disabled = false
     }
 }

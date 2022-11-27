@@ -2,6 +2,7 @@ import {createBufferObject, loadFileFromUrl} from "./utils";
 import {VertexBuffer} from "./VertexBuffer";
 import {Geometry} from "./Geometry";
 import {degToRad} from "./math/math_utils";
+import {MouseClickType} from "./constant";
 
 // import Quad from './static/Quad.obj'
 
@@ -14,6 +15,8 @@ export class Model extends Geometry {
         this.mDiffuseMaterial = [0, 0, 0, 0]
         this.mSpecularMaterial = [0, 0, 0, 0]
         this.sceneNode = null
+        this.leftMouseDown = false
+        this.startPoint = null
     }
 
     async init(modelPath, sceneNode) {
