@@ -42,7 +42,7 @@ var model_matrix = m4.identity()
 let sphereNode = null
 
 function addScene(sceneNode) {
-    if(!rootScene) {
+    if (!rootScene) {
         rootScene = sceneNode
     } else {
         rootScene.add(sceneNode)
@@ -50,7 +50,7 @@ function addScene(sceneNode) {
 }
 
 function addUiScene(sceneNode) {
-    if(!uiRootScene) {
+    if (!uiRootScene) {
         uiRootScene = sceneNode
     } else {
         uiRootScene.add(sceneNode)
@@ -58,16 +58,27 @@ function addUiScene(sceneNode) {
 }
 
 async function initGround() {
-    ground = new Ground()
+    let shader = new Shader()
+    await shader.initStandardShader("/src/shaders/point_light.vs.html", "/src/shaders/point_light.fs.html")
+    let material = new Material()
+    material.init(shader)
+    material.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
+    material.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
+    material.setVec4('U_DiffuseLightColor', [0.1, 0.4, 0.7, 1.0])
+    material.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    material.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    const ground = new Ground()
     await ground.init()
     const sceneNode = new SceneNode()
-    sceneNode.init(ground, pointLightMaterial)
+    sceneNode.init(ground, material)
     sceneNode.mModelMatrix = m4.translation(0, -1.5, 0)
     addScene(sceneNode)
 }
 
 
 async function initPointLightMaterial() {
+
+
     let shader = new Shader()
     await shader.initStandardShader("/src/shaders/point_light.vs.html", "/src/shaders/point_light.fs.html")
     pointLightMaterial = new Material()
@@ -76,6 +87,8 @@ async function initPointLightMaterial() {
     pointLightMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
     pointLightMaterial.setVec4('U_DiffuseLightColor', [0.1, 0.4, 0.7, 1.0])
     pointLightMaterial.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    pointLightMaterial.setVec4('U_DiffuseMaterial', [0.9, 0.9, 0.9, 1.0])
+    pointLightMaterial.setVec4('U_CameraPosition', [...camera.mPosition, 1.0])
     pointLightMaterial.setVec4('U_LightPos', lightPosition)
 }
 
@@ -166,12 +179,27 @@ async function initNiutou() {
 
 
 async function initSphere() {
-    model = new Model()
+    let shader = new Shader()
+    await shader.initStandardShader("/src/shaders/specular.vs.html", "/src/shaders/specular.fs.html")
+    let specularMaterial = new Material()
+    specularMaterial.init(shader)
+    specularMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
+    specularMaterial.setVec4('U_AmbientMaterial', [0.1, 0.1, 0.1, 1.0])
+
+    specularMaterial.setVec4('U_DiffuseLight', [0.7, 0.7, 0.7, 1.0])
+    specularMaterial.setVec4('U_DiffuseMaterial', [0.4, 0.4, 0.4, 1.0])
+
+    specularMaterial.setVec4('U_CameraPosition', [...camera.mPosition, 1.0])
+    specularMaterial.setVec4('U_SpecularMaterial', [0.4, 0.4, 0.4, 1.0])
+
+    specularMaterial.setVec4('U_SpecularLight', [0.9, 0.9, 0.9, 1.0])
+    specularMaterial.setVec4('U_LightPosition', [3.0, 3.0, 3.0, 0.0])
+
+    let model = new Model()
     const sceneNode = new SceneNode()
     await model.init('/src/static/Sphere.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(-3.5, -1, -6)
-    m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
-    sceneNode.init(model, pointLightMaterial)
+    sceneNode.init(model, specularMaterial)
     addScene(sceneNode)
 }
 
@@ -185,19 +213,19 @@ async function initEarth() {
     sphereNode = sceneNode
     addScene(sceneNode)
     earthModel.addEventListener(MouseEventType.mousedown, (e) => {
-        if(e.button === MouseClickType.left) {
+        if (e.button === MouseClickType.left) {
             earthModel.leftMouseDown = true
             earthModel.startPoint = e
         }
     })
     earthModel.addEventListener(MouseEventType.mouseup, (e) => {
-        if(e.button === MouseClickType.left) {
+        if (e.button === MouseClickType.left) {
             earthModel.leftMouseDown = false
         }
 
     })
     earthModel.addEventListener(MouseEventType.mousemove, (e) => {
-        if(earthModel.leftMouseDown) {
+        if (earthModel.leftMouseDown) {
             const {clientX, clientY} = e
             const {clientX: startX, clientY: startY} = earthModel.startPoint
             let x = clientX - startX
@@ -300,24 +328,30 @@ export async function init() {
     await initEarth()
     await initNiutou()
     await initSprite()
-    // await initSkybox()
     await initGround()
+    // await initSkybox()
 }
 
 const $ = document.querySelector.bind(document)
 
 function initUI() {
     const cameraLock = $('.camera-lock')
-    cameraLock.checked = true
-    camera.disable()
+    let s = localStorage.getItem('cameraLock') || 'false'
+    s = JSON.parse(s)
+    cameraLock.checked = s
+    if (s) {
+        camera.disable()
+    } else {
+        camera.enable()
+    }
     cameraLock.addEventListener('change', (e) => {
-        console.log('debug e', e.target.checked)
         const checked = e.target.checked
-        if(checked) {
+        if (checked) {
             camera.disable()
         } else {
             camera.enable()
         }
+        localStorage.setItem('cameraLock', checked)
     })
 }
 

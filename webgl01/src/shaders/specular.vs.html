@@ -1,0 +1,21 @@
+<script type="x-shader/x-fragment" id="specular.vs">
+    precision mediump float;
+
+    attribute vec4 position;
+    attribute vec4 color;
+    attribute vec2 texcoord;
+    attribute vec4 normal;
+    uniform mat4 M;
+    uniform mat4 P;
+    uniform mat4 V;
+    uniform mat4 IT_ModelMatrix;
+    varying vec4 V_Normal;
+    varying vec4 V_worldPos;
+    void main(){
+        V_Normal = normal * IT_ModelMatrix;
+        V_worldPos = M*position;
+        gl_Position=P*V*M*position;
+    }
+
+
+</script>

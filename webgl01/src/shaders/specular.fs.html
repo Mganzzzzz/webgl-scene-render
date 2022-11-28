@@ -1,0 +1,48 @@
+<script type="x-shader/x-fragment" id="specular.fs">
+    precision mediump float;
+
+
+    varying vec4 V_Color;
+    varying vec2 V_texcord;
+    uniform sampler2D U_texture, U_texture2;
+
+    // 环境光
+    uniform vec4 U_AmbientMaterial;
+    uniform vec4 U_AmbientLight;
+
+    // 漫反射
+    uniform vec4 U_DiffuseMaterial;
+    uniform vec4 U_DiffuseLight;
+
+    // 镜面反射
+    uniform vec4 U_SpecularMaterial;
+    uniform vec4 U_SpecularLight;
+
+    uniform vec4 U_LightPosition;
+    uniform vec4 U_CameraPosition;
+
+    varying vec4 V_Normal;
+    varying vec4 V_worldPos;
+
+    void main(){
+        vec3 L=U_LightPosition.xyz;
+        L= normalize(L);
+        vec3 n = normalize(V_Normal.xyz);
+        float diffuse_intensity =  max(0.0, dot(L, n));
+        vec4 diffuse_color = U_DiffuseLight * U_DiffuseMaterial * diffuse_intensity;
+        vec4  spucular_color = vec4(0.0, 0.0, 0.0, 0.0);
+        if (diffuse_intensity > 0.0) {
+            vec3 reflectDirection = reflect(-L, n);// 计算反射的光方向
+            reflectDirection = normalize(reflectDirection);
+            vec3 worldPos = V_worldPos.xyz;
+            vec3 viewDirection = normalize(U_CameraPosition.xyz - worldPos);// 计算出视角的方向
+            // 通过视角和反射光的夹角来计算出光线的强度
+            spucular_color = U_SpecularLight * U_SpecularMaterial * pow(max(0.0, dot(viewDirection, reflectDirection)), 4.0);
+        }
+
+
+        gl_FragColor= U_AmbientLight * U_AmbientMaterial + diffuse_color + spucular_color;
+    }
+
+
+</script>
