@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy": "npm run build && tsc && npm run upload",
+    "upload": "scp -r ./dist/*  qcloud:/home/ubuntu/www/webgl",
     "preview": "vite preview"
   },
   "devDependencies": {
