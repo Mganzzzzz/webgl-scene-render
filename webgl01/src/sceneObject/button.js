@@ -2,7 +2,7 @@ import {SceneElement} from "./object";
 import {Shader} from "../Shader";
 import {Material} from "../Material";
 import {createTextTexture, createTextureFromUrl} from "../utils";
-import fTexture from "../static/f-texture.png";
+import fTexture from "/static/f-texture.png";
 import {Sprite} from "../Sprite";
 import {SceneNode} from "../SceneNode";
 
@@ -64,7 +64,7 @@ export class Button extends SceneElement {
 
     async initSpriteMaterial() {
         let shader = new Shader()
-        await shader.initStandardShader("/src/shaders/button.vs.html", "/src/shaders/button.fs.html")
+        await shader.initStandardShader("/shaders/button.vs.html", "/shaders/button.fs.html")
         this.mMaterial = new Material()
         this.mMaterial.init(shader);
         this.mMaterial.mbEnableBlend = true;
@@ -82,7 +82,7 @@ export class Button extends SceneElement {
 
     async initText() {
         let shader = new Shader()
-        await shader.initStandardShader("/src/shaders/text.vs.html", "/src/shaders/text.fs.html")
+        await shader.initStandardShader("/shaders/text.vs.html", "/shaders/text.fs.html")
         let textMaterial = new Material()
         textMaterial.mbEnableBlend = true
         textMaterial.mSRCBlendFunc = gl.ONE
@@ -90,7 +90,7 @@ export class Button extends SceneElement {
         textMaterial.init(shader);
         textMaterial.depthMask = false;
 
-        let texture = await createTextTexture('hello', this.w + this.padding, this.h + this.padding)
+        let texture = await createTextTexture('按钮', this.w + this.padding, this.h + this.padding)
         textMaterial.setTexture("U_texture", texture);
 
         this.mText = new Sprite()

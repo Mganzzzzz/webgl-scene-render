@@ -4,7 +4,7 @@ import {Geometry} from "./Geometry";
 import {degToRad} from "./math/math_utils";
 import {MouseClickType} from "./constant";
 
-// import Quad from './static/Quad.obj'
+// import Quad from '/static/Quad.obj'
 
 export class Model extends Geometry {
     constructor() {

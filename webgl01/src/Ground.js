@@ -1,6 +1,6 @@
 import {VertexBuffer} from "./VertexBuffer";
 import {createBufferObject, createTextureFromUrl} from "./utils";
-import testImg from './static/test.png'
+import testImg from '/static/test.png'
 import {Geometry} from "./Geometry";
 export class Ground extends Geometry{
     constructor(shader) {

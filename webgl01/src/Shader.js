@@ -22,7 +22,9 @@ export class Shader {
 
     async initStandardShader(vs_path, fs_path) {
         let vs_selector = await loadHtmlShader(vs_path)
+        console.log('debug vs_selector', vs_selector)
         let fs_selector = await loadHtmlShader(fs_path)
+        console.log('debug fs_selector', fs_selector)
         this.mProgram = webglUtils.createProgramFromScripts(gl, [vs_selector, fs_selector]);
         const {mProgram} = this
         this.mPositionLocation = gl.getAttribLocation(mProgram, "position");

@@ -3,7 +3,7 @@ import {SceneNode} from "../SceneNode";
 import {Shader} from "../Shader";
 import {Material} from "../Material";
 import {createTextureFromUrl} from "../utils";
-import fTexture from "../static/f-texture.png";
+import fTexture from "/static/f-texture.png";
 import {SceneElement} from "./object";
 
 
@@ -18,7 +18,7 @@ export class Sprite1 extends SceneElement {
 
     async initSpriteMaterial() {
         let shader = new Shader()
-        await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
+        await shader.initStandardShader("/shaders/sprite.vs.html", "/shaders/sprite.fs.html")
         this.mMaterial = new Material()
         this.mMaterial.init(shader);
         this.mMaterial.mbEnableBlend = true;

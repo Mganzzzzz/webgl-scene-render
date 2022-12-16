@@ -1,15 +1,15 @@
 import {degToRad} from "./math/math_utils";
 import {createBufferObject, createProcedureTexture, createTextureCubeFromUrl, createTextureFromUrl} from "./utils";
-import testImg from './static/test.png'
+import testImg from '/static/test.png'
 import {Shader} from "./Shader";
 import {VertexBuffer} from "./VertexBuffer";
 import {Ground} from "./Ground";
 import {Model} from "./Model";
 import {SceneNode} from "./SceneNode";
 import {Material} from "./Material";
-import testTexture from './static/test.png'
-import fTexture from './static/f-texture.png'
-import niutouTexture from './static/niutou.png'
+import testTexture from '/static/test.png'
+import fTexture from '/static/f-texture.png'
+import niutouTexture from '/static/niutou.png'
 import {Camera} from "./Camera";
 import {Particle} from "./Particle";
 import {Sprite} from "./Sprite";
@@ -59,7 +59,7 @@ function addUiScene(sceneNode) {
 
 async function initGround() {
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/point_light.vs.html", "/src/shaders/point_light.fs.html")
+    await shader.initStandardShader("/shaders/point_light.vs.html", "/shaders/point_light.fs.html")
     let material = new Material()
     material.init(shader)
     material.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
@@ -80,7 +80,7 @@ async function initPointLightMaterial() {
 
 
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/point_light.vs.html", "/src/shaders/point_light.fs.html")
+    await shader.initStandardShader("/shaders/point_light.vs.html", "/shaders/point_light.fs.html")
     pointLightMaterial = new Material()
     pointLightMaterial.init(shader)
     pointLightMaterial.setVec4('U_AmbientLightColor', [0.1, 0.1, 0.1, 1.0])
@@ -103,7 +103,7 @@ async function initParticleSystem() {
 
 async function initParticleMaterial() {
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/particle.vs.html", "/src/shaders/particle.fs.html")
+    await shader.initStandardShader("/shaders/particle.vs.html", "/shaders/particle.fs.html")
     particleMaterial = new Material()
     particleMaterial.init(shader)
     particleMaterial.mbEnableBlend = true;
@@ -116,7 +116,7 @@ async function initParticleMaterial() {
 async function initNiutouMaterial() {
     const texture = await createTextureFromUrl(niutouTexture);
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/light_color.vs.html", "/src/shaders/light_color.fs.html")
+    await shader.initStandardShader("/shaders/light_color.vs.html", "/shaders/light_color.fs.html")
     niutouColorMaterial = new Material()
     niutouColorMaterial.init(shader)
     niutouColorMaterial.setVec4('U_LightPos', [0, 1, 0, 0.0])
@@ -137,9 +137,9 @@ async function initNiutouMaterial() {
 
 async function initEarthMaterial() {
     let shader = new Shader()
-    let texture = await createTextureFromUrl('/src/static/earth.bmp')
+    let texture = await createTextureFromUrl('/static/earth.bmp')
 
-    await shader.initStandardShader("/src/shaders/point_light_texture.vs.html", "/src/shaders/point_light_texture.fs.html")
+    await shader.initStandardShader("/shaders/point_light_texture.vs.html", "/shaders/point_light_texture.fs.html")
     earthColorMaterial = new Material()
     earthColorMaterial.init(shader)
 
@@ -154,7 +154,7 @@ async function initEarthMaterial() {
 
 async function initSpriteMaterial() {
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/sprite.vs.html", "/src/shaders/sprite.fs.html")
+    await shader.initStandardShader("/shaders/sprite.vs.html", "/shaders/sprite.fs.html")
     spriteMaterial = new Material()
     spriteMaterial.init(shader);
     spriteMaterial.mbEnableBlend = true;
@@ -167,7 +167,7 @@ async function initSpriteMaterial() {
 async function initNiutou() {
     model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/niutou.obj', sceneNode)
+    await model.init('/static/niutou.obj', sceneNode)
     sceneNode.init(model, niutouColorMaterial)
     const modelMatrix = sceneNode.mModelMatrix
     m4.multiply(sceneNode.mModelMatrix, m4.translation(3, -1, -8), sceneNode.mModelMatrix)
@@ -180,7 +180,7 @@ async function initNiutou() {
 
 async function initSphere() {
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/specular.vs.html", "/src/shaders/specular.fs.html")
+    await shader.initStandardShader("/shaders/specular.vs.html", "/shaders/specular.fs.html")
     let specularMaterial = new Material()
     specularMaterial.init(shader)
     specularMaterial.setVec4('U_AmbientLight', [0.1, 0.1, 0.1, 1.0])
@@ -197,7 +197,7 @@ async function initSphere() {
 
     let model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Sphere.obj', sceneNode)
+    await model.init('/static/Sphere.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(-3.5, -1, -6)
     sceneNode.init(model, specularMaterial)
     addScene(sceneNode)
@@ -206,7 +206,7 @@ async function initSphere() {
 async function initEarth() {
     let earthModel = new Model()
     const sceneNode = new SceneNode()
-    await earthModel.init('/src/static/Sphere.obj', sceneNode)
+    await earthModel.init('/static/Sphere.obj', sceneNode)
     sceneNode.mModelMatrix = m4.translation(-1.5, -1, -6)
     m4.multiply(sceneNode.mModelMatrix, m4.yRotation(degToRad(50)), sceneNode.mModelMatrix)
     sceneNode.init(earthModel, earthColorMaterial)
@@ -240,7 +240,7 @@ async function initEarth() {
 
 async function initSprite() {
     let sprite = new Sprite()
-    sprite.setSize(100, 100)
+    sprite.setSize(30, 30)
     const sceneNode = new SceneNode()
     sceneNode.init(sprite, spriteMaterial)
     sceneNode.mModelMatrix = m4.translation(-350, 250, 0)
@@ -249,10 +249,10 @@ async function initSprite() {
 
 async function initSkybox() {
 
-    const texture = await createTextureCubeFromUrl("/src/static/front.bmp", "/src/static/back.bmp",
-        "/src/static/left.bmp", "/src/static/right.bmp", "/src/static/bottom.bmp", "/src/static/top.bmp")
+    const texture = await createTextureCubeFromUrl("/static/front.bmp", "/static/back.bmp",
+        "/static/left.bmp", "/static/right.bmp", "/static/bottom.bmp", "/static/top.bmp")
     let shader = new Shader()
-    await shader.initStandardShader("/src/shaders/skybox.vs.html", "/src/shaders/skybox.fs.html")
+    await shader.initStandardShader("/shaders/skybox.vs.html", "/shaders/skybox.fs.html")
     let skyboxMaterial = new Material()
     skyboxMaterial.init(shader)
     skyboxMaterial.setTextureCube('U_texture', texture)
@@ -260,7 +260,7 @@ async function initSkybox() {
     skyboxMaterial.mbEnableDepthTest = false
     let model = new Model()
     const sceneNode = new SceneNode()
-    await model.init('/src/static/Cube.obj', sceneNode)
+    await model.init('/static/Cube.obj', sceneNode)
     sceneNode.init(model, skyboxMaterial)
     addScene(sceneNode)
 }

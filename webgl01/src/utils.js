@@ -159,9 +159,9 @@ export async function loadFileFromUrl(path) {
 }
 
 export async function loadHtmlShader(path) {
-    const content = await import(path)
+    const content = await fetch(path).then(r => r.text())
     const shaderBox = document.querySelector('.shaders')
-    shaderBox.innerHTML = shaderBox.innerHTML + content.default
+    shaderBox.innerHTML = shaderBox.innerHTML + content
     return path.replace('.html', '').split('/').reverse()[0];
 }
 

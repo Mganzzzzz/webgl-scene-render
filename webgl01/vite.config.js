@@ -1,6 +1,10 @@
 import {defineConfig} from 'vite'
 const rawPlugin = require('vite-raw-plugin')
 export default defineConfig({
+    // base: './',
+    // build: {
+        // assetsDir: '.'
+    // },
     define: {
         gl: 'window.gl'
     },
