@@ -109,6 +109,7 @@ export async function createProcedureTexture(size) {
 }
 
 export async function createTextureFromUrl(path, flip) {
+    document.querySelector('.loading').innerHTML += `<p class="loading-log">载入材质${path}</p>`
     var image = new Image();
 
     image.src = path;
@@ -153,12 +154,14 @@ export async function createTextTexture(content, width, height) {
 }
 
 export async function loadFileFromUrl(path) {
+    document.querySelector('.loading').innerHTML += `<p class="loading-log">加载文件 ${path}</p>`
     const response = await fetch(path);
     const text = await response.text();
     return text
 }
 
 export async function loadHtmlShader(path) {
+    document.querySelector('.loading').innerHTML += `<p class="loading-log">加载shader ${path}</p>`
     const content = await fetch(path).then(r => r.text())
     const shaderBox = document.querySelector('.shaders')
     shaderBox.innerHTML = shaderBox.innerHTML + content

@@ -9,10 +9,18 @@
         body {
             background-color: #504444;
         }
+        .hidden {
+            display: none;
+        }
 
         canvas {
             /*border: 1px solid lightblue;*/
             /*cursor: none;*/
+        }
+        .loading-log {
+            margin: 0;
+            color: white;
+            font-size: 10px;
         }
 
     </style>
@@ -25,6 +33,13 @@
 <!--<div id="app"></div>-->
 <script src="webgl-utils.js"></script>
 <script src="m4.js"></script>
+<div class="loading hidden" style="width: 800px; height: 600px;
+text-align: center; color: #fff;
+overflow: auto;
+">
+  <p class="title">资源加载中</p>
+
+</div>
 <canvas class="" id="c" width="800" height="600"></canvas>
 
 <div id="wrap" style="display:none;">
@@ -32,9 +47,9 @@
 
 <div>
     <div>
-        wasd 控制方向  鼠标右键按住控制镜头, 鼠标左键按住控制地球仪
+        wasd 控制方向 鼠标右键按住控制镜头, 鼠标左键按住控制地球仪
     </div>
-    <input type="checkbox" class="camera-lock" >像机锁定
+    <input type="checkbox" class="camera-lock">像机锁定
 
 </div>
 <script>
